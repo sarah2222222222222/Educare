@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Submissions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f9fafb;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h2
+        class="text-4xl font-bold text-gray-800 mb-10 text-center flex items-center justify-center gap-3"
+      >
+        <i class="fas fa-user-graduate text-indigo-600"></i>
+        <span
+          class="bg-gradient-to-r from-indigo-600 to-purple-500 bg-clip-text text-transparent"
+        >
+          Student Submissions
+        </span>
+      </h2>
+
+      <section class="space-y-8">
+        <article
+          class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100"
+        >
+          <div class="overflow-auto rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200 table-auto">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                  >
+                    Student
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                  >
+                    Title
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                  >
+                    Submitted On
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                  >
+                    File
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                  >
+                    Type
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                  >
+                    Grade
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                  >
+                    Feedback
+                  </th>
+                  <th
+                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody
+                id="submissions-body"
+                class="bg-white divide-y divide-gray-100"
+              >
+                <!-- Dynamic rows will be added here -->
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Retrieve the token from localStorage
+        const token = localStorage.getItem("token");
+
+        // If token doesn't exist, alert user and redirect to login
+        if (!token) {
+          alert("You are not logged in. Please log in first.");
+          window.location.href = "/login.html";
+          return;
+        }
+
+        // Fetching all submissions
+        fetch("http://localhost:3000/submit", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            const submissions = data.data;
+            const tableBody = document.getElementById("submissions-body");
+
+            submissions.forEach((submission) => {
+              const user = submission.user || {};
+              const userName = `${user.firstName || "Unknown"} ${
+                user.lastName || ""
+              }`;
+              const date =
+                submission.customDate ||
+                new Date(submission.createdAt).toLocaleString();
+              const fileName = submission.file || "No file";
+              const fileLink = `http://localhost:3000/files/${fileName}`;
+              const submissionId = submission._id; // ID for the submission
+
+              const row = document.createElement("tr");
+              row.className = "hover:bg-indigo-50 transition-all";
+
+              row.innerHTML = `
+                <td class="px-6 py-4 whitespace-normal break-words text-sm">
+                  <div class="flex items-center space-x-3">
+                    <img class="h-10 w-10 rounded-full ring-1 ring-gray-300 object-cover" 
+                         src="https://ui-avatars.com/api/?name=${encodeURIComponent(
+                           userName
+                         )}&background=random"
+                         alt="${userName}" onerror="this.src='https://via.placeholder.com/40'">
+                    <span class="font-medium text-gray-900">${userName}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-normal break-words text-sm text-gray-900">${
+                  submission.title || "—"
+                }</td>
+                <td class="px-6 py-4 whitespace-normal text-sm text-gray-600">${date}</td>
+                <td class="px-6 py-4 whitespace-normal break-words text-sm text-indigo-600">
+                  <a class="hover:underline break-all inline-block" href="${fileLink}" target="_blank" title="Download ${fileName}">
+                    <i class="fas fa-file mr-1"></i>${fileName}
+                  </a>
+                </td>
+                <td class="px-6 py-4 whitespace-normal text-sm text-gray-700 capitalize">${
+                  submission.type
+                }</td>
+                <td class="px-6 py-4 whitespace-normal text-sm font-semibold text-gray-700 grade-cell">${
+                  submission.grade ?? "—"
+                }</td>
+                <td class="px-6 py-4 whitespace-normal text-sm italic text-gray-500 feedback-cell">${
+                  submission.feedback || "Not graded yet"
+                }</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                  <button class="inline-flex items-center px-3 py-1 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 transition grade-btn" type="button" data-id="${submissionId}">
+                    <i class="fas fa-pen mr-1"></i> Grade
+                  </button>
+                </td>
+              `;
+
+              tableBody.appendChild(row);
+
+              const gradeBtn = row.querySelector(".grade-btn");
+              gradeBtn.addEventListener("click", async () => {
+                try {
+                  const gradeInput = prompt(`Enter grade for ${userName}:`);
+                  const grade = parseFloat(gradeInput);
+
+                  if (!isNaN(grade)) {
+                    const feedback =
+                      prompt(`Enter feedback for ${userName}:`) || "—";
+
+                    // Optimistic UI update
+                    row.querySelector(".grade-cell").textContent = grade;
+                    row.querySelector(".feedback-cell").textContent = feedback;
+                    row.classList.add("bg-green-50");
+
+                    // Sending the update to the server with Authorization header
+                    const response = await fetch(
+                      `http://localhost:3000/submit/${submissionId}`,
+                      {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${token}`, // Include the token in the header
+                        },
+                        body: JSON.stringify({
+                          grade: grade,
+                          feedback: feedback,
+                        }),
+                      }
+                    );
+
+                    if (!response.ok) {
+                      const errorData = await response.json();
+                      throw new Error(
+                        errorData.message || "Failed to update submission"
+                      );
+                    }
+
+                    alert("Grade submitted successfully!");
+                  } else {
+                    alert("Invalid grade. Please enter a number.");
+                  }
+                } catch (err) {
+                  console.error("Error saving grade:", err);
+                  alert(`Error saving grade: ${err.message}`);
+
+                  // Revert optimistic update if failed
+                  row.querySelector(".grade-cell").textContent =
+                    submission.grade ?? "—";
+                  row.querySelector(".feedback-cell").textContent =
+                    submission.feedback || "Not graded yet";
+                  row.classList.remove("bg-green-50"); // Reset background color on failure
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.error("Failed to load submissions:", error);
+            document.getElementById("submissions-body").innerHTML = `
+              <tr><td colspan="8" class="px-6 py-4 text-red-600">Failed to load data from API.</td></tr>
+            `;
+          });
+      });
+    </script>
+  </body>
+</html>

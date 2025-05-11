@@ -1,0 +1,350 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Create and Publish Material with Generate Button</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #f3f4f6;
+    }
+    textarea::-webkit-scrollbar {
+      width: 8px;
+    }
+    textarea::-webkit-scrollbar-thumb {
+      background-color: #3b82f6;
+      border-radius: 4px;
+    }
+    input[type="file"]::-webkit-file-upload-button {
+      cursor: pointer;
+      background-color: #bfdbfe;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      color: #1e40af;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    input[type="file"]::-webkit-file-upload-button:hover {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+        /* Floating larger AI companion */
+        @keyframes float {
+            0% {
+                transform: translatey(0px);
+            }
+            50% {
+                transform: translatey(-10px);
+            }
+            100% {
+                transform: translatey(0px);
+            }
+        }
+        .floating {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 1s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+  </style>
+ </head>
+ <body class="text-gray-900">
+  <div class="flex min-h-screen">
+   <!-- Left Sidebar -->
+   <nav class="flex flex-row md:flex-col space-x-6 md:space-x-0 md:space-y-6 bg-white rounded-xl p-4 md:p-6 w-full md:w-48 shadow-[0_0_10px_#f0f2f5] min-h-[auto] md:min-h-[400px] overflow-x-auto md:overflow-visible">
+    <img alt="Chatbot logo with letters CB in blue and white background" class="w- h-12 rounded-lg shadow-md" height="48" src="../assets/Images/ChatGPT Image Apr 12, 2025, 07_43_14 PM.png" width="48"/>
+    <a href="../Pages/index.html" class="flex items-center space-x-2 text-[#0d8cf0] font-semibold text-sm hover:text-[#0b7cd9] transition-colors duration-200 whitespace-nowrap">
+     <i class="fas fa-list-ul text-lg">
+     </i>
+     <span>
+      Home
+     </span>
+    </a> 
+   <a href="../Pages/dash.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+     <img alt="Icon of a clipboard representing classrooms" class="w-5 h-5" height="20" src="../assets/Images/live-streaming.png" width="20"/>
+     <span>
+      classrooms
+     </span>
+    </a>
+    <a href="../Pages/favorites.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+     <img alt="Icon of a yellow star representing favorites" class="w-5 h-5" height="20" src="../assets/Images/star.png" width="20"/>
+     <span>
+      favorites
+     </span>
+    </a>
+    <a href="../Pages/archived.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+     <img alt="Icon of a school building representing archived classes" class="w-5 h-5" height="20" src="../assets/Images/archive.png" width="20"/>
+     <span>
+      archived classes
+     </span>
+    </a>
+    <a href="./store.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+     <img alt="Icon of an app store symbol representing store" class="w-5 h-5" height="20" src="../assets/Images/app-store.png" width="20"/>
+     <span>
+      store
+     </span>
+    </a>
+    <a href="./settings.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+     <img alt="Icon of a gear representing settings" class="w-5 h-5" height="20" src="../assets/Images/settings.png" width="20"/>
+     <span>
+      settings
+     </span>
+    </a> 
+   </nav>
+   </aside>
+   <!-- Main content -->
+   <main class="flex-1 p-10 max-w-4xl mx-auto">
+   <!-- Navigation Tabs -->
+   <nav
+   class="flex items-center justify-center gap-8 bg-white border border-gray-200 rounded-full py-2 px-6 shadow-sm mb-10">
+   <a
+     class="text-gray-500 text-sm hover:text-sky-600 cursor-pointer"
+     href="./stream.html"
+     id="tabStream"
+     >Stream</a
+   >
+   <a
+   class="text-sky-600 font-semibold text-sm hover:underline cursor-pointer"
+     href="./classwork.html"
+     id="tabClasswork"
+     >Classwork</a
+   >
+   <a
+     class="text-gray-500 text-sm hover:text-sky-600 cursor-pointer"
+     href="./people.html"
+     >People</a
+   >
+   <a
+     class="text-gray-500 text-sm hover:text-sky-600 cursor-pointer"
+     href="./Messages.html"
+     >Messages</a
+   >
+   <a
+     class="text-gray-500 text-sm hover:text-sky-600 cursor-pointer"
+     href="./calendar.html"
+     id="tabCalendar"
+     >Calendar</a
+   >
+   <button
+     aria-label="Settings"
+     class="ml-4 text-sky-600 hover:text-sky-800 cursor-pointer"
+     title="Settings">
+     <i class="fas fa-cog text-lg"></i>
+   </button>
+ </nav>
+  <!-- Floating Avatar bottom right -->
+  <div class="fixed bottom-4 right-4 floating">
+    <a href="./chatbot.html" onclick="openModal()">
+     <img alt="AI icon" class="w-20 h-20 rounded-full" src="../assets/Images/WhatsApp Image 2024-11-15 at 19.39.33_b2a01f1c.jpg"/>
+    </a>
+   </div>
+<!-- main content form -->
+    <section class="bg-white rounded-3xl shadow-xl p-10 max-w-3xl mx-auto space-y-8">
+     <h1 class="text-3xl font-bold text-gray-900">Create and Publish Material</h1>
+
+     <button
+       id="generateMaterialBtn"
+       type="button"
+       class="w-full bg-indigo-600 text-white text-lg font-semibold rounded-xl px-6 py-4 hover:bg-indigo-700 transition shadow-md"
+       aria-label="Navigate to Generate Material Page"
+     >
+      Generate Material
+     </button>
+
+     <form id="materialForm" class="flex flex-col gap-8" enctype="multipart/form-data" novalidate>
+      <div>
+       <label for="materialTopic" class="text-lg font-semibold text-gray-800 mb-3 block">Topic</label>
+       <input
+         type="text"
+         id="materialTopic"
+         name="materialTopic"
+         placeholder="Enter topic or subject"
+         class="border border-gray-300 rounded-xl px-5 py-4 text-lg w-full focus:outline-none focus:ring-4 focus:ring-blue-500 transition"
+         required
+       />
+      </div>
+
+      <div>
+       <label for="materialTitle" class="text-lg font-semibold text-gray-800 mb-3 block">Title</label>
+       <input
+         type="text"
+         id="materialTitle"
+         name="materialTitle"
+         placeholder="Enter title"
+         class="border border-gray-300 rounded-xl px-5 py-4 text-lg w-full focus:outline-none focus:ring-4 focus:ring-blue-500 transition"
+         required
+       />
+      </div>
+
+      <div>
+       <label for="materialContent" class="text-lg font-semibold text-gray-800 mb-3 block">Content</label>
+       <textarea
+         id="materialContent"
+         name="materialContent"
+         rows="8"
+         placeholder="Enter the content of the material"
+         class="border border-gray-300 rounded-xl px-5 py-4 text-lg w-full focus:outline-none focus:ring-4 focus:ring-blue-500 resize-y transition"
+         required
+       ></textarea>
+      </div>
+
+      <div>
+       <label for="fileUpload" class="text-lg font-semibold text-gray-800 mb-3 block">Upload Files (from device or Google Drive)</label>
+       <input
+         type="file"
+         id="fileUpload"
+         name="fileUpload"
+         multiple
+         class="block w-full text-lg text-gray-700 file:mr-6 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-lg file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 focus:outline-none focus:ring-4 focus:ring-blue-500 transition"
+       />
+       <p class="text-sm text-gray-500 mt-2">
+        You can upload multiple files. Supported: PDFs, images, docs, etc.
+       </p>
+      </div>
+
+      <div class="flex justify-end gap-6 mt-8">
+       <button
+         type="reset"
+         class="text-blue-600 text-lg font-semibold hover:underline focus:outline-none"
+       >
+        Clear All
+       </button>
+       <button
+         type="submit"
+         class="bg-green-600 text-white text-lg font-semibold rounded-xl px-8 py-3 hover:bg-green-700 transition shadow-lg"
+       >
+        Publish Material
+       </button>
+      </div>
+     </form>
+    </section>
+   </main>
+  </div>
+
+  <script>
+   const generateMaterialBtn = document.getElementById("generateMaterialBtn");
+    const materialForm = document.getElementById("materialForm");
+
+    generateMaterialBtn.addEventListener("click", () => {
+      // Navigate to generate material page
+      window.location.href = "generate-assignment.html";
+    });
+
+    // Generate unique ID
+    function generateId() {
+      return "id-" + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Convert uploaded files to base64 strings for storage (simulate upload)
+    function readFilesAsBase64(files) {
+      return Promise.all(
+        Array.from(files).map(
+          (file) =>
+            new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                resolve({
+                  name: file.name,
+                  type: file.type,
+                  size: file.size,
+                  data: reader.result,
+                });
+              };
+              reader.onerror = () => reject(reader.error);
+              reader.readAsDataURL(file);
+            })
+        )
+      );
+    }
+
+    // Load published materials from localStorage
+    function loadPublishedMaterials() {
+      const items = JSON.parse(localStorage.getItem("publishedMaterials")) || [];
+      if (items.length === 0) {
+        return;
+      }
+      // You can implement display logic here if needed
+    }
+
+    // Handle form submit for material publish
+    materialForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const topic = materialForm.materialTopic.value.trim();
+      const title = materialForm.materialTitle.value.trim();
+      const content = materialForm.materialContent.value.trim();
+      const filesInput = materialForm.fileUpload;
+
+      if (!topic || !title || !content) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      let filesData = [];
+      if (filesInput.files.length > 0) {
+        try {
+          filesData = await readFilesAsBase64(filesInput.files);
+        } catch (err) {
+          alert("Error reading files: " + err.message);
+          return;
+        }
+      }
+
+      const publishedMaterials =
+        JSON.parse(localStorage.getItem("publishedMaterials")) || [];
+
+      publishedMaterials.push({
+        id: generateId(),
+        topic,
+        title,
+        content,
+        files: filesData,
+      });
+
+      localStorage.setItem("publishedMaterials", JSON.stringify(publishedMaterials));
+      alert("Material published successfully.");
+      materialForm.reset();
+      loadPublishedMaterials();
+    });
+
+    // Initial load
+    window.addEventListener("DOMContentLoaded", () => {
+      loadPublishedMaterials();
+    });
+  </script>
+ </body>
+</html>

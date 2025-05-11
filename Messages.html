@@ -1,0 +1,695 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Classroom Group Chat with Group Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+    }
+    /* Custom scrollbar for messages */
+    #messages::-webkit-scrollbar {
+      width: 10px;
+    }
+    #messages::-webkit-scrollbar-track {
+      background: #e5e7eb; /* gray-200 */
+      border-radius: 10px;
+    }
+    #messages::-webkit-scrollbar-thumb {
+      background-color: #3b82f6; /* blue-500 */
+      border-radius: 10px;
+      border: 3px solid #e5e7eb;
+    }
+    /* Scrollbar for Firefox */
+    #messages {
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 #e5e7eb;
+    }
+    /* Message bubble max width for large screens */
+    @media (min-width: 768px) {
+      .message-bubble {
+        max-width: 420px;
+      }
+    }
+    /* Hover effect on media */
+    .message-bubble img,
+    .message-bubble video {
+      transition: filter 0.3s ease;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+    }
+    .message-bubble img:hover,
+    .message-bubble video:hover {
+      filter: brightness(0.9);
+    }
+    /* File link styling */
+    .file-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      user-select: text;
+    }
+    .file-link i {
+      font-size: 1.25rem;
+    }
+    /* Role buttons active state */
+    .role-btn-active {
+      background-color: #1e40af !important; /* blue-900 */
+      box-shadow: 0 0 8px rgb(59 130 246 / 0.6);
+    }
+    /* Group list scrollbar */
+    #group-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    #group-list::-webkit-scrollbar-track {
+      background: #f3f4f6;
+      border-radius: 10px;
+    }
+    #group-list::-webkit-scrollbar-thumb {
+      background-color: #3b82f6;
+      border-radius: 10px;
+    }
+    #group-list {
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 #f3f4f6;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <header class="bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 text-white p-5 flex flex-col sm:flex-row items-center justify-between shadow-lg">
+    <h1 class="text-2xl font-extrabold tracking-wide drop-shadow-md select-none">Classroom Group Chat</h1>
+    <nav class="mt-3 sm:mt-0 flex items-center space-x-4">
+      <button id="btn-student" class="role-btn px-5 py-2 rounded-full bg-blue-800 hover:bg-blue-700 transition font-semibold shadow-md focus:outline-none focus:ring-4 focus:ring-blue-300" aria-pressed="true" aria-label="Select Student role">Student</button>
+      <button id="btn-teacher" class="role-btn px-5 py-2 rounded-full bg-blue-800 hover:bg-blue-700 transition font-semibold shadow-md focus:outline-none focus:ring-4 focus:ring-blue-300" aria-pressed="false" aria-label="Select Teacher role">Teacher</button>
+      <select id="role-select" class="ml-4 rounded-md px-3 py-2 text-black font-medium sm:hidden" aria-label="Select role">
+        <option value="student" selected>Student</option>
+        <option value="teacher">Teacher</option>
+      </select>
+    </nav>
+  </header>
+
+  <main class="flex-grow flex max-w-7xl mx-auto w-full p-6 gap-6 flex-col md:flex-row">
+    <!-- Groups Sidebar (Teacher only) -->
+    <aside id="groups-sidebar" class="hidden md:flex flex-col w-72 bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+      <div class="p-5 border-b border-gray-300 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-700 select-none">Groups</h2>
+        <button id="btn-new-group" class="text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded" aria-label="Create new group">
+          <i class="fas fa-plus fa-lg"></i>
+        </button>
+      </div>
+      <ul id="group-list" class="flex-grow overflow-y-auto divide-y divide-gray-200" role="list" aria-label="List of groups">
+        <!-- Groups will be listed here -->
+      </ul>
+    </aside>
+
+    <!-- Chat Container -->
+    <section
+      id="chat-container"
+      class="flex flex-col flex-grow bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200"
+      role="region"
+      aria-label="Chat messages"
+    >
+      <div
+        id="messages"
+        class="flex-grow overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-white to-blue-50"
+        aria-live="polite"
+        aria-relevant="additions"
+        tabindex="0"
+      >
+        <p class="text-center text-gray-400 select-none" id="no-group-msg">Please select or create a group to start chatting.</p>
+      </div>
+      <form
+        id="chat-form"
+        class="flex items-center gap-2 border-t border-gray-300 p-5 bg-white"
+        autocomplete="off"
+        enctype="multipart/form-data"
+        aria-label="Send message form"
+      >
+        <label for="file-input" class="relative cursor-pointer group bg-gray-100 hover:bg-gray-200 rounded-xl border border-gray-300 flex items-center justify-center w-12 h-12 text-gray-600 hover:text-gray-800 transition-shadow shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-1" title="Attach file, audio, or video" tabindex="0" role="button" aria-haspopup="dialog" aria-controls="file-input">
+          <i class="fas fa-paperclip fa-lg pointer-events-none"></i>
+          <input
+            type="file"
+            id="file-input"
+            accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar"
+            class="hidden"
+            aria-label="Attach file input"
+          />
+          <span class="sr-only">Attach file</span>
+        </label>
+        <input
+          type="text"
+          id="message-input"
+          placeholder="Select a group to start chatting..."
+          class="flex-grow rounded-2xl border border-gray-300 px-5 py-3 text-gray-400 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-blue-500 shadow-sm transition"
+          aria-label="Message input"
+          autocomplete="off"
+          spellcheck="true"
+          disabled
+        />
+        <button
+          type="submit"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl shadow-lg transition flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="Send message"
+          disabled
+        >
+          <i class="fas fa-paper-plane fa-lg"></i>
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <!-- Modal for creating new group -->
+  <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
+    <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 mx-4">
+      <h3 id="modal-title" class="text-xl font-semibold text-gray-800 mb-4 select-none">Create New Group</h3>
+      <form id="new-group-form" class="flex flex-col gap-4" autocomplete="off">
+        <label for="group-name" class="font-semibold text-gray-700 select-none">Group Name</label>
+        <input type="text" id="group-name" name="group-name" required placeholder="Enter group name" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" aria-describedby="group-name-error" />
+        <p id="group-name-error" class="text-red-600 text-sm hidden">Group name is required.</p>
+
+        <label for="student-ids" class="font-semibold text-gray-700 select-none">Student IDs (comma separated)</label>
+        <textarea id="student-ids" name="student-ids" rows="3" placeholder="e.g. 12345, 67890, 11223" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" aria-describedby="student-ids-error"></textarea>
+        <p id="student-ids-error" class="text-red-600 text-sm hidden">Please enter at least one valid student ID.</p>
+
+        <div class="flex justify-end space-x-4 mt-4">
+          <button type="button" id="btn-cancel" class="px-5 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  <script>
+    (() => {
+      const messagesEl = document.getElementById('messages');
+      const chatForm = document.getElementById('chat-form');
+      const messageInput = document.getElementById('message-input');
+      const fileInput = document.getElementById('file-input');
+      const btnStudent = document.getElementById('btn-student');
+      const btnTeacher = document.getElementById('btn-teacher');
+      const roleSelect = document.getElementById('role-select');
+      const roleButtons = document.querySelectorAll('.role-btn');
+      const groupsSidebar = document.getElementById('groups-sidebar');
+      const groupList = document.getElementById('group-list');
+      const btnNewGroup = document.getElementById('btn-new-group');
+      const modalOverlay = document.getElementById('modal-overlay');
+      const newGroupForm = document.getElementById('new-group-form');
+      const groupNameInput = document.getElementById('group-name');
+      const studentIdsInput = document.getElementById('student-ids');
+      const groupNameError = document.getElementById('group-name-error');
+      const studentIdsError = document.getElementById('student-ids-error');
+      const btnCancel = document.getElementById('btn-cancel');
+      const noGroupMsg = document.getElementById('no-group-msg');
+
+      // Default role is student
+      let currentRole = 'student';
+
+      // Groups data structure: { groupId: { name: string, studentIds: array, messages: array } }
+      // Stored in localStorage under 'classroom-chat-groups'
+      let groups = {};
+      let currentGroupId = null;
+
+      // Update role UI and aria-pressed states
+      function updateRoleUI(role) {
+        currentRole = role;
+        roleButtons.forEach((btn) => {
+          if (btn.id === `btn-${role}`) {
+            btn.classList.add('role-btn-active');
+            btn.setAttribute('aria-pressed', 'true');
+          } else {
+            btn.classList.remove('role-btn-active');
+            btn.setAttribute('aria-pressed', 'false');
+          }
+        });
+        if (roleSelect) {
+          roleSelect.value = role;
+        }
+        if (role === 'student') {
+          messageInput.placeholder = currentGroupId ? 'Type your question or message as Student...' : 'Select a group to start chatting...';
+        } else {
+          messageInput.placeholder = currentGroupId ? 'Type your answer or message as Teacher...' : 'Select a group to start chatting...';
+        }
+        if (currentGroupId) {
+          messageInput.disabled = false;
+          chatForm.querySelector('button[type="submit"]').disabled = false;
+          fileInput.disabled = false;
+        } else {
+          messageInput.disabled = true;
+          chatForm.querySelector('button[type="submit"]').disabled = true;
+          fileInput.disabled = true;
+        }
+        messageInput.focus();
+      }
+
+      // Update role from buttons (desktop)
+      if (btnStudent && btnTeacher) {
+        btnStudent.addEventListener('click', () => updateRoleUI('student'));
+        btnTeacher.addEventListener('click', () => updateRoleUI('teacher'));
+      }
+
+      // Update role from select (mobile)
+      if (roleSelect) {
+        roleSelect.addEventListener('change', (e) => {
+          updateRoleUI(e.target.value);
+        });
+      }
+
+      // Initialize role UI
+      updateRoleUI(currentRole);
+
+      // Save groups to localStorage
+      function saveGroups() {
+        localStorage.setItem('classroom-chat-groups', JSON.stringify(groups));
+      }
+
+      // Load groups from localStorage
+      function loadGroups() {
+        const saved = localStorage.getItem('classroom-chat-groups');
+        if (saved) {
+          try {
+            groups = JSON.parse(saved);
+          } catch {
+            groups = {};
+          }
+        }
+      }
+
+      // Render group list in sidebar
+      function renderGroupList() {
+        groupList.innerHTML = '';
+        const groupIds = Object.keys(groups);
+        if (groupIds.length === 0) {
+          const emptyMsg = document.createElement('p');
+          emptyMsg.className = 'p-4 text-gray-500 select-none';
+          emptyMsg.textContent = 'No groups created yet.';
+          groupList.appendChild(emptyMsg);
+          return;
+        }
+        groupIds.forEach((id) => {
+          const group = groups[id];
+          const li = document.createElement('li');
+          li.className = 'px-5 py-3 cursor-pointer hover:bg-blue-100 select-none flex items-center justify-between';
+          li.setAttribute('role', 'button');
+          li.setAttribute('tabindex', '0');
+          li.setAttribute('aria-label', `Select group ${group.name}`);
+          if (id === currentGroupId) {
+            li.classList.add('bg-blue-200', 'font-semibold');
+          }
+          li.textContent = group.name;
+
+          // Show number of members as badge
+          const badge = document.createElement('span');
+          badge.className = 'ml-2 bg-blue-600 text-white text-xs font-semibold rounded-full px-2 py-0.5 select-none';
+          badge.textContent = group.studentIds.length;
+          li.appendChild(badge);
+
+          li.addEventListener('click', () => {
+            selectGroup(id);
+          });
+          li.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectGroup(id);
+            }
+          });
+
+          groupList.appendChild(li);
+        });
+      }
+
+      // Select a group to chat
+      function selectGroup(groupId) {
+        if (!groups[groupId]) return;
+        currentGroupId = groupId;
+        renderGroupList();
+        loadMessagesForGroup(groupId);
+        updateRoleUI(currentRole);
+      }
+
+      // Create a message bubble with text or media
+      function createMessageBubble(message) {
+        // message: { type: 'text'|'image'|'audio'|'video'|'file', content: string (text or dataURL or file name), role, timestamp, fileName? }
+        const { type, content, role, timestamp, fileName } = message;
+
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('flex', 'items-start', 'space-x-4', 'max-w-full');
+
+        if (role === 'teacher') {
+          wrapper.classList.add('justify-start');
+        } else {
+          wrapper.classList.add('justify-end');
+        }
+
+        const bubble = document.createElement('div');
+        bubble.classList.add(
+          'message-bubble',
+          'px-6',
+          'py-3',
+          'rounded-2xl',
+          'shadow-md',
+          'break-words',
+          'whitespace-pre-wrap',
+          'select-text',
+          'relative'
+        );
+
+        if (role === 'teacher') {
+          bubble.classList.add('bg-green-100', 'text-green-900', 'rounded-bl-none');
+        } else {
+          bubble.classList.add('bg-blue-600', 'text-white', 'rounded-br-none');
+        }
+
+        // Content inside bubble
+        if (type === 'text') {
+          bubble.textContent = content;
+        } else if (type === 'image') {
+          const img = document.createElement('img');
+          img.src = content;
+          img.alt = fileName ? `Image file named ${fileName}` : 'Image message';
+          img.className = 'rounded-xl max-w-full h-auto shadow-lg cursor-pointer';
+          img.loading = 'lazy';
+          bubble.appendChild(img);
+          if (fileName) {
+            const fn = document.createElement('div');
+            fn.textContent = fileName;
+            fn.className = 'mt-2 text-xs font-semibold truncate select-text';
+            bubble.appendChild(fn);
+          }
+        } else if (type === 'audio') {
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = content;
+          audio.className = 'w-full rounded-xl shadow-md';
+          bubble.appendChild(audio);
+          if (fileName) {
+            const fn = document.createElement('div');
+            fn.textContent = fileName;
+            fn.className = 'mt-2 text-xs font-semibold truncate select-text';
+            bubble.appendChild(fn);
+          }
+        } else if (type === 'video') {
+          const video = document.createElement('video');
+          video.controls = true;
+          video.src = content;
+          video.className = 'rounded-xl max-w-full h-auto shadow-lg';
+          bubble.appendChild(video);
+          if (fileName) {
+            const fn = document.createElement('div');
+            fn.textContent = fileName;
+            fn.className = 'mt-2 text-xs font-semibold truncate select-text';
+            bubble.appendChild(fn);
+          }
+        } else if (type === 'file') {
+          // Show a file icon and a download link
+          const fileWrapper = document.createElement('div');
+          fileWrapper.className = 'file-link select-text';
+
+          const icon = document.createElement('i');
+          icon.className = 'fas fa-file-alt text-gray-600';
+          fileWrapper.appendChild(icon);
+
+          const link = document.createElement('a');
+          link.href = content;
+          link.download = fileName || 'file';
+          link.textContent = fileName || 'Download file';
+          link.className = role === 'teacher' ? 'text-green-900 underline' : 'text-white underline';
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          fileWrapper.appendChild(link);
+
+          bubble.appendChild(fileWrapper);
+        }
+
+        const meta = document.createElement('div');
+        meta.classList.add('text-xs', 'text-gray-400', 'mt-2', 'select-none', 'font-mono');
+
+        const timeString = new Date(timestamp).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+
+        meta.textContent = `${role.charAt(0).toUpperCase() + role.slice(1)} • ${timeString}`;
+
+        if (role === 'teacher') {
+          wrapper.appendChild(bubble);
+          wrapper.appendChild(meta);
+        } else {
+          wrapper.appendChild(meta);
+          wrapper.appendChild(bubble);
+        }
+
+        return wrapper;
+      }
+
+      // Load messages for a group
+      function loadMessagesForGroup(groupId) {
+        messagesEl.innerHTML = '';
+        if (!groups[groupId]) return;
+        const group = groups[groupId];
+        if (!group.messages || group.messages.length === 0) {
+          const emptyMsg = document.createElement('p');
+          emptyMsg.className = 'text-center text-gray-400 select-none';
+          emptyMsg.textContent = 'No messages yet. Start the conversation!';
+          messagesEl.appendChild(emptyMsg);
+          return;
+        }
+        group.messages.forEach((msg) => {
+          const msgEl = createMessageBubble(msg);
+          messagesEl.appendChild(msgEl);
+        });
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      // Save messages for current group
+      function saveMessagesForGroup() {
+        if (!currentGroupId || !groups[currentGroupId]) return;
+        const msgs = [];
+        messagesEl.querySelectorAll('div.flex.items-start, div.flex.justify-end').forEach((msgEl) => {
+          const bubble = msgEl.querySelector('div.message-bubble');
+          const meta = msgEl.querySelector('div.text-xs');
+          if (bubble && meta) {
+            const metaText = meta.textContent;
+            const role = metaText.toLowerCase().startsWith('teacher') ? 'teacher' : 'student';
+            const timestamp = new Date().getTime(); // fallback timestamp
+
+            // Determine message type and content
+            let type = 'text';
+            let content = '';
+            let fileName = '';
+
+            // Check bubble children to detect media
+            if (bubble.querySelector('img')) {
+              type = 'image';
+              content = bubble.querySelector('img').src;
+              fileName = bubble.querySelector('div')?.textContent || '';
+            } else if (bubble.querySelector('audio')) {
+              type = 'audio';
+              content = bubble.querySelector('audio').src;
+              fileName = bubble.querySelector('div')?.textContent || '';
+            } else if (bubble.querySelector('video')) {
+              type = 'video';
+              content = bubble.querySelector('video').src;
+              fileName = bubble.querySelector('div')?.textContent || '';
+            } else if (bubble.querySelector('a')) {
+              type = 'file';
+              content = bubble.querySelector('a').href;
+              fileName = bubble.querySelector('a').textContent;
+            } else {
+              type = 'text';
+              content = bubble.textContent;
+            }
+
+            msgs.push({ type, content, role, timestamp, fileName });
+          }
+        });
+        groups[currentGroupId].messages = msgs;
+        saveGroups();
+      }
+
+      // Convert file to data URL (base64)
+      function fileToDataURL(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.onerror = (e) => reject(e);
+          reader.readAsDataURL(file);
+        });
+      }
+
+      chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!currentGroupId) return;
+
+        const text = messageInput.value.trim();
+        const file = fileInput.files[0];
+
+        if (!text && !file) return;
+
+        // If file is selected, process file message
+        if (file) {
+          // Limit file size to 10MB for performance
+          if (file.size > 10 * 1024 * 1024) {
+            alert('File size exceeds 10MB limit.');
+            fileInput.value = '';
+            return;
+          }
+
+          const fileType = file.type;
+          let type = 'file';
+
+          if (fileType.startsWith('image/')) {
+            type = 'image';
+          } else if (fileType.startsWith('audio/')) {
+            type = 'audio';
+          } else if (fileType.startsWith('video/')) {
+            type = 'video';
+          }
+
+          try {
+            const dataURL = await fileToDataURL(file);
+            const timestamp = Date.now();
+            const message = {
+              type,
+              content: dataURL,
+              role: currentRole,
+              timestamp,
+              fileName: file.name,
+            };
+            const msgEl = createMessageBubble(message);
+            messagesEl.appendChild(msgEl);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            saveMessagesForGroup();
+          } catch {
+            alert('Failed to read the file.');
+          }
+
+          fileInput.value = '';
+        }
+
+        // If text is present, send text message
+        if (text) {
+          const timestamp = Date.now();
+          const message = {
+            type: 'text',
+            content: text,
+            role: currentRole,
+            timestamp,
+          };
+          const msgEl = createMessageBubble(message);
+          messagesEl.appendChild(msgEl);
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+
+          saveMessagesForGroup();
+          messageInput.value = '';
+        }
+
+        messageInput.focus();
+      });
+
+      // Accessibility: Pressing Enter in file input does nothing (to avoid accidental submits)
+      fileInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+        }
+      });
+
+      // Show modal to create new group
+      btnNewGroup.addEventListener('click', () => {
+        groupNameInput.value = '';
+        studentIdsInput.value = '';
+        groupNameError.classList.add('hidden');
+        studentIdsError.classList.add('hidden');
+        modalOverlay.classList.remove('hidden');
+        groupNameInput.focus();
+      });
+
+      // Cancel modal
+      btnCancel.addEventListener('click', () => {
+        modalOverlay.classList.add('hidden');
+      });
+
+      // Close modal on overlay click (outside modal content)
+      modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+          modalOverlay.classList.add('hidden');
+        }
+      });
+
+      // Handle new group form submission
+      newGroupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const groupName = groupNameInput.value.trim();
+        const studentIdsRaw = studentIdsInput.value.trim();
+
+        let valid = true;
+
+        if (!groupName) {
+          groupNameError.classList.remove('hidden');
+          valid = false;
+        } else {
+          groupNameError.classList.add('hidden');
+        }
+
+        // Parse student IDs: split by comma, trim, filter out empty
+        const studentIds = studentIdsRaw
+          .split(',')
+          .map((id) => id.trim())
+          .filter((id) => id.length > 0);
+
+        if (studentIds.length === 0) {
+          studentIdsError.classList.remove('hidden');
+          valid = false;
+        } else {
+          studentIdsError.classList.add('hidden');
+        }
+
+        if (!valid) return;
+
+        // Create unique group ID
+        const groupId = `group-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+        groups[groupId] = {
+          name: groupName,
+          studentIds,
+          messages: [],
+        };
+
+        saveGroups();
+        renderGroupList();
+        selectGroup(groupId);
+        modalOverlay.classList.add('hidden');
+      });
+
+      // Initialize
+      loadGroups();
+      renderGroupList();
+
+      // If groups exist, select first group by default (teacher view)
+      if (Object.keys(groups).length > 0) {
+        selectGroup(Object.keys(groups)[0]);
+      }
+
+      // Disable chat input for students if no group selected
+      updateRoleUI(currentRole);
+    })();
+  </script>
+</body>
+</html>

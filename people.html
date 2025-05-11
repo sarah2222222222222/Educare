@@ -1,0 +1,925 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Classroom Invite Modal - Confirm Delete on Select</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      margin: 0;
+      background-color: #f9fafb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    /* Floating larger AI companion */
+    @keyframes float {
+            0% {
+                transform: translatey(0px);
+            }
+            50% {
+                transform: translatey(-10px);
+            }
+            100% {
+                transform: translatey(0px);
+            }
+        }
+        .floating {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 1s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+    #app-container {
+      max-width: 1100px;
+      width: 100%;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+      overflow: hidden;
+      min-height: 400px;
+      display: flex;
+      gap: 1.5rem;
+    }
+    /* Sidebar */
+    nav#sidebar {
+      background: #fefefe;
+      border-right: 1px solid #e5e7eb;
+      width: 80px;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 0.5rem;
+      gap: 1rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    nav#sidebar a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.625rem;
+      color: #6b7280;
+      text-decoration: none;
+      gap: 0.25rem;
+      width: 100%;
+      text-align: center;
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 0.25rem 0;
+    }
+    nav#sidebar a.active,
+    nav#sidebar a:hover {
+      color: #2563eb;
+      font-weight: 600;
+    }
+    nav#sidebar a i {
+      font-size: 0.75rem;
+    }
+    nav#sidebar a img {
+      width: 16px;
+      height: 16px;
+    }
+    /* Main content area */
+    #main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 2rem;
+      overflow: hidden;
+    }
+    /* Top nav horizontal above invitation */
+    nav#topnav {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.75rem;
+      color: #6b7280;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.75rem;
+      user-select: none;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-shrink: 0;
+    }
+    nav#topnav a {
+      color: #6b7280;
+      text-decoration: none;
+      font-weight: 400;
+      padding-bottom: 0.25rem;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav#topnav a.active {
+      color: #2563eb;
+      font-weight: 600;
+      border-bottom-color: #2563eb;
+    }
+    nav#topnav button {
+      margin-left: auto;
+      color: #2563eb;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0;
+    }
+    /* People list container */
+    #people-list-container {
+      flex: 1;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.75rem;
+      padding: 1rem 1.5rem;
+      overflow-y: auto;
+      color: #374151;
+      font-size: 0.75rem;
+    }
+    /* Section headers */
+    .people-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #374151;
+    }
+    .people-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .person-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      transition: background-color 0.2s;
+    }
+    .person-item:hover {
+      background-color: #e0e7ff;
+    }
+    .person-item img {
+      border-radius: 9999px;
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+    .person-name {
+      flex-shrink: 0;
+      font-weight: 500;
+      color: #4b5563;
+    }
+    /* Bottom avatar */
+    #bottom-avatar {
+      display: flex;
+      justify-content: flex-end;
+    }
+    #bottom-avatar img {
+      border-radius: 9999px;
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+    }
+    /* Modal styles */
+    #invite-modal,
+    #confirm-delete-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 50;
+      padding: 1rem;
+    }
+    #invite-modal.show,
+    #confirm-delete-modal.show {
+      display: flex;
+    }
+    #invite-modal-content,
+    #confirm-delete-modal-content {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 1rem;
+      padding: 1.5rem 2rem 2rem 2rem;
+      width: 100%;
+      max-width: 360px;
+      font-size: 0.75rem;
+      color: #6b7280;
+      display: flex;
+      flex-direction: column;
+      min-height: 360px;
+      box-shadow: 0 10px 25px rgb(0 0 0 / 0.1);
+    }
+    #invite-modal-content h2,
+    #confirm-delete-modal-content h2 {
+      color: #374151;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      font-size: 1.125rem;
+    }
+    #invite-modal-content label {
+      font-size: 0.625rem;
+      color: #9ca3af;
+      margin-bottom: 0.5rem;
+      font-weight: 400;
+    }
+    #invite-input {
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      color: #374151;
+      margin-bottom: 1rem;
+      outline-offset: 2px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #invite-input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px #bfdbfe;
+    }
+    #invite-list {
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      max-height: 180px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      color: #374151;
+      margin-bottom: 1.5rem;
+    }
+    #invite-list .invite-person {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      color: #374151;
+      align-items: center;
+    }
+    #invite-list .invite-person img {
+      border-radius: 9999px;
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+    #invite-list .invite-person div {
+      line-height: 1.2;
+    }
+    #invite-list .invite-person .name {
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.875rem;
+    }
+    #invite-list .invite-person .email {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+    #invite-modal-content .buttons,
+    #confirm-delete-modal-content .buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    #invite-modal-content button,
+    #confirm-delete-modal-content button {
+      background: none;
+      border: none;
+      color: #257beb;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+      transition: text-decoration 0.2s;
+    }
+    #invite-modal-content button:disabled,
+    #confirm-delete-modal-content button:disabled {
+      color: #9ca3af;
+      cursor: not-allowed;
+    }
+    #invite-modal-content button:hover:not(:disabled),
+    #confirm-delete-modal-content button:hover:not(:disabled) {
+      text-decoration: underline;
+    }
+    #role-select {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      color: #374151;
+      outline-offset: 2px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #role-select:focus {
+      outline: none;
+      border-color: #7125eb;
+      box-shadow: 0 0 0 2px #bfdbfe;
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem 0.5rem;
+      }
+      #app-container {
+        flex-direction: column;
+        border-radius: 1rem 1rem 0 0;
+        box-shadow: none;
+      }
+      nav#sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0.5rem 0;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      nav#sidebar a {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+      }
+      #main-content {
+        padding: 1rem 1rem 2rem 1rem;
+        overflow: visible;
+      }
+      #people-list-container {
+        padding: 1rem;
+        font-size: 0.75rem;
+        max-height: none;
+        overflow: visible;
+      }
+      .person-item img {
+        width: 28px;
+        height: 28px;
+      }
+      #bottom-avatar img {
+        width: 36px;
+        height: 36px;
+      }
+      #invite-modal-content,
+      #confirm-delete-modal-content {
+        max-width: 90vw;
+        min-height: auto;
+        padding: 1rem 1.25rem 1.5rem 1.25rem;
+      }
+      #invite-modal-content h2,
+      #confirm-delete-modal-content h2 {
+        font-size: 1rem;
+      }
+      #invite-input,
+      #role-select {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+      }
+      #invite-list .invite-person img {
+        width: 28px;
+        height: 28px;
+      }
+      #invite-list .invite-person .name {
+        font-size: 0.8rem;
+      }
+      #invite-list .invite-person .email {
+        font-size: 0.7rem;
+      }
+      #invite-modal-content button,
+      #confirm-delete-modal-content button {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-container" role="main" aria-label="Classroom dashboard">
+    <!-- Sidebar -->
+    <nav class="flex flex-row md:flex-col space-x-6 md:space-x-0 md:space-y-6 bg-white rounded-xl p-4 md:p-6 w-full md:w-48 shadow-[0_0_10px_#f0f2f5] min-h-[auto] md:min-h-[400px] overflow-x-auto md:overflow-visible">
+      <a href="../Pages/index.html" class="flex items-center space-x-2 text-[#0d8cf0] font-semibold text-sm hover:text-[#0b7cd9] transition-colors duration-200 whitespace-nowrap">
+       <i class="fas fa-list-ul text-lg">
+       </i>
+       <span>
+        Home
+       </span>
+      </a> 
+     <a href="../Pages/dash.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+       <img alt="Icon of a clipboard representing classrooms" class="w-5 h-5" height="20" src="../assets/Images/live-streaming.png" width="20"/>
+       <span>
+        classrooms
+       </span>
+      </a>
+      <a href="../Pages/favorites.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+       <img alt="Icon of a yellow star representing favorites" class="w-5 h-5" height="20" src="../assets/Images/star.png" width="20"/>
+       <span>
+        favorites
+       </span>
+      </a>
+      <a href="../Pages/archive.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+       <img alt="Icon of a school building representing archived classes" class="w-5 h-5" height="20" src="../assets/Images/archive.png" width="20"/>
+       <span>
+        archived classes
+       </span>
+      </a>
+      <a href="./store.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+       <img alt="Icon of an app store symbol representing store" class="w-5 h-5" height="20" src="../assets/Images/app-store.png" width="20"/>
+       <span>
+        store
+       </span>
+      </a>
+      <a href="./settings.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+       <img alt="Icon of a gear representing settings" class="w-5 h-5" height="20" src="../assets/Images/settings.png" width="20"/>
+       <span>
+        settings
+       </span>
+      </a> 
+     </nav>
+
+    <!-- Main content -->
+    <main id="main-content" aria-label="Classroom main content">
+       <main class="flex-1 flex flex-col gap-4">
+      <!-- Navigation Tabs -->
+      <nav
+        class="flex items-center justify-center gap-8 bg-white border border-gray-200 rounded-full py-2 px-6 shadow-sm"
+      >
+        <a
+          class="text-gray-500 text-sm hover:text-sky-600 cursor-pointer"
+          href="./stream.html"
+          id="tabStream"
+          >Stream</a
+        >
+        <a
+          class="text-gray-500 text-sm hover:text-sky-600 cursor-pointer"
+          href="./classwork.html"
+          id="tabClasswork"
+          >Classwork</a
+        >
+        <a
+          class="text-sky-600 font-semibold text-sm hover:underline cursor-pointer"
+          href="./people.html"
+          >People</a
+        >
+        <a
+          class="text-gray-500 text-sm hover:text-sky-600 cursor-pointer"
+          href="./Messages.html"
+          >Messages</a
+        >
+        <a
+          class="text-gray-500 text-sm hover:text-sky-600 cursor-pointer"
+          href="./calendar.html"
+          id="tabCalendar"
+          >Calendar</a
+        >
+        <button
+          aria-label="Settings"
+          class="ml-4 text-sky-600 hover:text-sky-800 cursor-pointer"
+          title="Settings"
+        >
+          <i class="fas fa-cog text-lg"></i>
+        </button>
+      </nav>
+
+      <!-- People List Container -->
+      <section
+        id="people-list-container"
+        tabindex="0"
+        aria-label="People list with teachers and students"
+      >
+        <!-- Teacher Section -->
+        <div class="people-section-header">
+          <span>Teacher</span>
+          <button
+            aria-label="Add teacher"
+            class="text-blue-600 hover:text-blue-800 text-lg font-bold"
+            id="add-teacher-btn"
+            type="button"
+          >
+            +
+          </button>
+        </div>
+        <div id="teachers" class="people-list text-gray-400 select-none">
+          <div class="person-item" tabindex="0" role="button" aria-label="Mohamed Bakr, teacher. Click to delete.">
+            <img
+              alt="Profile picture of Mohamed Bakr, a man with beard and glasses"
+              src="https://storage.googleapis.com/a1aa/image/9368c3a9-1a5a-4736-220c-ab1155ab59e5.jpg"
+              width="32"
+              height="32"
+            />
+            <span class="person-name">Ahmad Yousry</span>
+          </div>
+        </div>
+
+        <!-- Student Section -->
+        <div class="people-section-header">
+          <span>Student</span>
+          <button
+            aria-label="Add student"
+            class="text-blue-600 hover:text-blue-800 text-lg font-bold"
+            id="add-student-btn"
+            type="button"
+          >
+            +
+          </button>
+        </div>
+        <div id="students" class="people-list text-gray-700">
+          <div class="person-item" tabindex="0" role="button" aria-label="Sarah othman, student. Click to delete.">
+            <img
+              alt="Profile picture of Sarah othman, a woman with short hair"
+              src="https://storage.googleapis.com/a1aa/image/4ec697f7-48bf-4056-7cf6-1ec929af5391.jpg"
+              width="32"
+              height="32"
+            />
+            <span class="person-name">Sarah othman</span>
+          </div>
+        </div>
+
+        <!-- Floating Avatar bottom right -->
+    <div class="fixed bottom-4 right-4 floating">
+      <a href="./chatbot.html" onclick="openModal()">
+       <img alt="AI icon" class="w-20 h-20 rounded-full" src="../assets/Images/WhatsApp Image 2024-11-15 at 19.39.33_b2a01f1c.jpg"/>
+      </a>
+     </div>
+
+  <!-- Invite Modal -->
+  <div
+    id="invite-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="invite-title"
+    class="fixed inset-0 hidden items-center justify-center modal-backdrop z-50 p-4"
+  >
+    <div
+      id="invite-modal-content"
+      class="bg-white border border-gray-200 rounded-lg p-6 w-full max-w-[360px] text-xs text-gray-500 shadow-lg"
+      style="min-height: 360px"
+    >
+      <h2 id="invite-title" class="text-gray-700 font-semibold mb-4 text-lg">
+        Add teacher or student
+      </h2>
+      <label
+        for="invite-input"
+        class="block text-xs text-gray-400 mb-2 font-normal"
+        >Type a name or email</label
+      >
+      <input
+        id="invite-input"
+        type="email"
+        aria-label="Type a name or email"
+        placeholder="Enter email address"
+        class="border border-gray-300 rounded-md p-3 w-full text-sm text-gray-700 mb-5 focus:outline-none focus:ring-2 focus:ring-blue-600"
+      />
+      <div
+        id="invite-list"
+        class="border border-gray-200 rounded-md p-4 max-h-[180px] overflow-y-auto scrollbar-thin mb-6"
+      >
+        <div class="invite-person flex items-center gap-4 mb-4 text-sm text-gray-700">
+          <img
+            alt="Profile picture of Mohamed Bakr, a man with beard and glasses"
+            src="https://storage.googleapis.com/a1aa/image/9368c3a9-1a5a-4736-220c-ab1155ab59e5.jpg"
+            width="32"
+            height="32"
+            class="rounded-full object-cover"
+          />
+          <div>
+            <div class="name font-semibold text-gray-700">Ahmad Yousry</div>
+            <div class="email text-xs text-gray-400">
+              Ahmad2455@gmail.com
+            </div>
+          </div>
+        </div>
+        <div class="invite-person flex items-center gap-4 mb-4 text-sm text-gray-700">
+          <img
+            alt="Profile picture of Mohamed Bakr, a man with beard and glasses"
+            src="https://storage.googleapis.com/a1aa/image/9368c3a9-1a5a-4736-220c-ab1155ab59e5.jpg"
+            width="32"
+            height="32"
+            class="rounded-full object-cover"
+          />
+          <div>
+            <div class="name font-semibold text-gray-700">Ahmad Yousry</div>
+            <div class="email text-xs text-gray-400">
+              Ahmad2455@gmail.com
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="buttons flex justify-end gap-6">
+        <button
+          id="invite-btn"
+          disabled
+          class="text-blue-600 text-sm font-normal hover:underline focus:outline-none"
+          type="button"
+        >
+          Add
+        </button>
+        <button
+          id="cancel-btn"
+          class="text-blue-600 text-sm font-normal hover:underline focus:outline-none"
+          type="button"
+        >
+          Cancel
+        </button>
+      </div>
+      <div class="mt-4">
+        <label
+          for="role-select"
+          class="text-sm text-gray-600 font-semibold mb-2 block"
+          >Select role to add</label
+        >
+        <select
+          id="role-select"
+          aria-label="Select role to invite"
+          class="w-full border border-gray-300 rounded-md p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+        >
+          <option value="teacher" selected>Teacher</option>
+          <option value="student">Student</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div
+    id="confirm-delete-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirm-delete-title"
+    class="fixed inset-0 hidden items-center justify-center modal-backdrop z-60 p-4"
+  >
+    <div
+      id="confirm-delete-modal-content"
+      class="bg-white border border-gray-200 rounded-lg p-6 w-full max-w-[360px] text-gray-700 shadow-lg"
+    >
+      <h2 id="confirm-delete-title" class="text-lg font-semibold mb-4">
+        Confirm Deletion
+      </h2>
+      <p id="confirm-delete-message" class="mb-6 text-sm">
+        Are you sure you want to delete <strong id="delete-person-name"></strong>?
+      </p>
+      <div class="flex justify-end gap-6">
+        <button
+          id="confirm-delete-btn"
+          class="text-red-600 font-semibold hover:underline focus:outline-none"
+          type="button"
+        >
+          Delete
+        </button>
+        <button
+          id="cancel-delete-btn"
+          class="text-gray-600 hover:underline focus:outline-none"
+          type="button"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const inviteInput = document.getElementById("invite-input");
+      const inviteBtn = document.getElementById("invite-btn");
+      const cancelBtn = document.getElementById("cancel-btn");
+      const roleSelect = document.getElementById("role-select");
+      const inviteTitle = document.getElementById("invite-title");
+      const teachersContainer = document.getElementById("teachers");
+      const studentsContainer = document.getElementById("students");
+      const addTeacherBtn = document.getElementById("add-teacher-btn");
+      const addStudentBtn = document.getElementById("add-student-btn");
+      const inviteModal = document.getElementById("invite-modal");
+
+      const confirmDeleteModal = document.getElementById("confirm-delete-modal");
+      const confirmDeleteMessage = document.getElementById("confirm-delete-message");
+      const deletePersonNameElem = document.getElementById("delete-person-name");
+      const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+      const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
+
+      let personToDelete = null;
+
+      // Enable invite button only if input is a valid email
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email.toLowerCase());
+      }
+
+      inviteInput.addEventListener("input", () => {
+        inviteBtn.disabled = !validateEmail(inviteInput.value.trim());
+      });
+
+      // Clear input and disable invite button
+      function resetInput() {
+        inviteInput.value = "";
+        inviteBtn.disabled = true;
+      }
+
+      // Create a new person element for teacher or student list
+      function createPersonElement(name, email, role) {
+        const container = document.createElement("div");
+        container.className = "person-item";
+        container.tabIndex = 0;
+        container.setAttribute("role", "button");
+        container.setAttribute(
+          "aria-label",
+          `${name}, ${role}. Click to delete.`
+        );
+
+        const img = document.createElement("img");
+        img.alt = `Profile picture of ${name}`;
+        img.width = 32;
+        img.height = 32;
+        // Use placeholder image with initials
+        const initials = name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase();
+        img.src = `https://placehold.co/32x32/8ca0ff/ffffff?text=${initials}`;
+
+        const span = document.createElement("span");
+        span.className = "person-name";
+        span.textContent = name;
+
+        container.appendChild(img);
+        container.appendChild(span);
+
+        // Add click and keyboard event to open confirm delete modal
+        container.addEventListener("click", () => {
+          openConfirmDeleteModal(container, name);
+        });
+        container.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openConfirmDeleteModal(container, name);
+          }
+        });
+
+        return container;
+      }
+
+      // Add person to the list
+      function addPerson(name, email, role) {
+        if (role === "teacher") {
+          // Add to teachers container
+          const newTeacher = createPersonElement(name, email, role);
+          newTeacher.classList.remove("text-gray-400", "select-none");
+          teachersContainer.appendChild(newTeacher);
+        } else if (role === "student") {
+          // Add to students container
+          const newStudent = createPersonElement(name, email, role);
+          studentsContainer.appendChild(newStudent);
+        }
+      }
+
+      // On invite button click
+      inviteBtn.addEventListener("click", () => {
+        const email = inviteInput.value.trim();
+        if (!validateEmail(email)) return;
+
+        // For demo, use email prefix as name (capitalize first letter)
+        const name = email
+          .split("@")[0]
+          .replace(/[\._\-]/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+
+        const role = roleSelect.value;
+
+        addPerson(name, email, role);
+        resetInput();
+        closeInviteModal();
+      });
+
+      // Cancel button clears input and closes modal
+      cancelBtn.addEventListener("click", () => {
+        resetInput();
+        closeInviteModal();
+      });
+
+      // Update invite title and placeholder based on role select
+      roleSelect.addEventListener("change", () => {
+        const role = roleSelect.value;
+        inviteTitle.textContent = `Invite ${role}`;
+        inviteInput.placeholder = `Enter ${role} email address`;
+      });
+
+      // Add teacher/student buttons on left side open the invite modal with correct role
+      addTeacherBtn.addEventListener("click", () => {
+        openInviteModal("teacher");
+      });
+      addStudentBtn.addEventListener("click", () => {
+        openInviteModal("student");
+      });
+
+      // Open invite modal and set role
+      function openInviteModal(role) {
+        roleSelect.value = role;
+        roleSelect.dispatchEvent(new Event("change"));
+        inviteModal.classList.add("show");
+        inviteInput.focus();
+      }
+
+      // Close invite modal
+      function closeInviteModal() {
+        inviteModal.classList.remove("show");
+      }
+
+      // Close invite modal on clicking outside modal content
+      inviteModal.addEventListener("click", (e) => {
+        if (e.target === inviteModal) {
+          resetInput();
+          closeInviteModal();
+        }
+      });
+
+      // Close invite modal on pressing Escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && inviteModal.classList.contains("show")) {
+          resetInput();
+          closeInviteModal();
+        }
+      });
+
+      // Confirm Delete Modal functions
+      function openConfirmDeleteModal(personElem, name) {
+        personToDelete = personElem;
+        deletePersonNameElem.textContent = name;
+        confirmDeleteModal.classList.add("show");
+        confirmDeleteBtn.focus();
+      }
+
+      function closeConfirmDeleteModal() {
+        personToDelete = null;
+        confirmDeleteModal.classList.remove("show");
+      }
+
+      confirmDeleteBtn.addEventListener("click", () => {
+        if (personToDelete) {
+          personToDelete.remove();
+        }
+        closeConfirmDeleteModal();
+      });
+
+      cancelDeleteBtn.addEventListener("click", () => {
+        closeConfirmDeleteModal();
+      });
+
+      // Close confirm delete modal on clicking outside modal content
+      confirmDeleteModal.addEventListener("click", (e) => {
+        if (e.target === confirmDeleteModal) {
+          closeConfirmDeleteModal();
+        }
+      });
+
+      // Close confirm delete modal on pressing Escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && confirmDeleteModal.classList.contains("show")) {
+          closeConfirmDeleteModal();
+        }
+      });
+    })();
+    function openModal() {
+             document.getElementById('chatbotModal').classList.remove('hidden');
+         }
+ 
+         function closeModal() {
+             document.getElementById('chatbotModal').classList.add('hidden');
+         }
+  
+  </script>
+
+</body>
+</html>

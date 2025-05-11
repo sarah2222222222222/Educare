@@ -1,0 +1,380 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Dashboard with Notifications</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    .custom-shadow {
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+    }
+    /* Notification badge */
+    #notification-badge {
+      @apply absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center;
+      font-size: 0.65rem;
+      transform: translate(50%, -50%);
+    }
+    /* Floating larger AI companion */
+    @keyframes float {
+            0% {
+                transform: translatey(0px);
+            }
+            50% {
+                transform: translatey(-10px);
+            }
+            100% {
+                transform: translatey(0px);
+            }
+        }
+        .floating {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 1s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+  </style>
+</head>
+<body class="bg-white font-sans">
+  <div class="flex min-h-screen">
+    <nav class="flex flex-row md:flex-col space-x-6 md:space-x-0 md:space-y-6 bg-white rounded-xl p-4 md:p-6 w-full md:w-48 shadow-[0_0_10px_#f0f2f5] min-h-[auto] md:min-h-[400px] overflow-x-auto md:overflow-visible">
+      <img alt="Chatbot logo with letters CB in blue and white background" class="w- h-12 rounded-lg shadow-md" height="48" src="../assets/Images/ChatGPT Image Apr 12, 2025, 07_43_14 PM.png" width="48"/>
+        <a href="../Pages/index.html" class="flex items-center space-x-2 text-[#0d8cf0] font-semibold text-sm hover:text-[#0b7cd9] transition-colors duration-200 whitespace-nowrap">
+         <i class="fas fa-list-ul text-lg">
+         </i>
+         <span>
+          Home
+         </span>
+        </a> 
+       <a href="../Pages/dash.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+         <img alt="Icon of a clipboard representing classrooms" class="w-5 h-5" height="20" src="../assets/Images/live-streaming.png" width="20"/>
+         <span>
+          classrooms
+         </span>
+        </a>
+        <a href="../Pages/favorites.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+         <img alt="Icon of a yellow star representing favorites" class="w-5 h-5" height="20" src="../assets/Images/star.png" width="20"/>
+         <span>
+          favorites
+         </span>
+        </a>
+        <a href="../Pages/archived.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+         <img alt="Icon of a school building representing archived classes" class="w-5 h-5" height="20" src="../assets/Images/archive.png" width="20"/>
+         <span>
+          archived classes
+         </span>
+        </a>
+        <a href="./store.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+         <img alt="Icon of an app store symbol representing store" class="w-5 h-5" height="20" src="../assets/Images/app-store.png" width="20"/>
+         <span>
+          store
+         </span>
+        </a>
+        <a href="./settings.html" class="flex items-center space-x-3 text-xs text-black font-normal hover:text-[#0d8cf0] hover:font-semibold transition-colors duration-200 whitespace-nowrap">
+         <img alt="Icon of a gear representing settings" class="w-5 h-5" height="20" src="../assets/Images/settings.png" width="20"/>
+         <span>
+          settings
+         </span>
+        </a> 
+       </nav>
+    </aside>
+    <!-- Main content -->
+    <main class="flex-1 p-6">
+      <!-- Top navigation -->
+      <nav
+        class="flex items-center justify-center gap-10 max-w-3xl mx-auto mb-10 py-3 px-6 rounded-3xl border border-[#d9e6f2] custom-shadow select-none"
+      >
+        <a
+          class="text-xs font-normal text-black leading-none hover:underline"
+          href="./stream.html"
+          >Stream</a
+        >
+        <a
+          class="text-xs font-normal text-black leading-none hover:underline"
+          href="./classwork.html"
+          >Classwork</a
+        >
+        <a
+          class="text-xs font-normal text-black leading-none hover:underline"
+          href="./people.html"
+          >People</a
+        >
+        <a
+          class="text-xs font-normal text-black leading-none hover:underline"
+          href="./Messages.html"
+          >Messages</a
+        >
+        <a
+          class="text-xs font-semibold text-sky-500 leading-none hover:underline"
+          href="./calendar.html"
+          >Calendar</a
+        >
+        <button aria-label="Settings" class="ml-6 text-sky-500 hover:text-sky-600 focus:outline-none">
+          <i class="fas fa-cog text-xl"></i>
+        </button>
+      </nav>
+      <!-- To review / Reviewed card -->
+      <section
+        id="work-section"
+        class="max-w-3xl mx-auto p-6 rounded-3xl border border-[#d9e6f2] custom-shadow select-none min-h-[220px]"
+      >
+        <div class="flex gap-20 mb-6">
+          <h3
+            class="text-xs font-semibold text-black drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]"
+          >
+            To review
+          </h3>
+          <h3
+            class="text-xs font-semibold text-black drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]"
+          >
+            Reviewed
+          </h3>
+        </div>
+        <div
+          id="to-review-list"
+          class="text-center text-sm font-normal text-black drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]"
+        >
+          No upcoming work
+        </div>
+        <div
+          id="reviewed-list"
+          class="text-center text-sm font-normal text-black drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] hidden"
+        ></div>
+      </section>
+    </main>
+    <!-- Right side floating buttons -->
+    <div
+      class="fixed top-32 right-6 flex flex-col items-center gap-10 select-none"
+    >
+      <button
+        id="create-btn"
+        class="flex items-center gap-2 bg-sky-200 text-sky-600 font-semibold text-sm leading-none rounded-full py-3 px-5 shadow-md hover:bg-sky-300 focus:outline-none"
+      >
+        <i class="fas fa-plus text-lg"></i> Create
+      </button>
+      <!-- Floating Avatar bottom right -->
+    <div class="fixed bottom-4 right-4 floating">
+        <a href="./chatbot.html" onclick="openModal()">
+         <img alt="AI icon" class="w-20 h-20 rounded-full" src="../assets/Images/WhatsApp Image 2024-11-15 at 19.39.33_b2a01f1c.jpg"/>
+        </a>
+       </div>
+    </div>
+
+    <!-- Modal backdrop -->
+    <div
+      id="modal-backdrop"
+      class="fixed inset-0 bg-black bg-opacity-30 hidden items-center justify-center z-50"
+    >
+      <!-- Modal -->
+      <div
+        class="bg-white rounded-3xl p-6 max-w-md w-full mx-4 shadow-lg relative"
+      >
+        <h3 class="text-lg font-semibold mb-4 text-center">Create Event</h3>
+        <form id="event-form" class="space-y-4">
+          <div>
+            <label
+              for="event-type"
+              class="block text-xs font-semibold mb-1 text-gray-700"
+              >Type</label
+            >
+            <select
+              id="event-type"
+              class="w-full border border-gray-300 rounded-md p-2 text-sm"
+              required
+            >
+              <option value="" disabled selected>Select type</option>
+              <option value="assignment">Assignment</option>
+              <option value="quizziz">Quizziz</option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="event-title"
+              class="block text-xs font-semibold mb-1 text-gray-700"
+              >Title</label
+            >
+            <input
+              id="event-title"
+              type="text"
+              class="w-full border border-gray-300 rounded-md p-2 text-sm"
+              placeholder="Enter title"
+              required
+            />
+          </div>
+          <div>
+            <label
+              for="event-date"
+              class="block text-xs font-semibold mb-1 text-gray-700"
+              >Date</label
+            >
+            <input
+              id="event-date"
+              type="date"
+              class="w-full border border-gray-300 rounded-md p-2 text-sm"
+              required
+            />
+          </div>
+          <div class="flex justify-end gap-4 pt-4">
+            <button
+              type="button"
+              id="cancel-btn"
+              class="px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 rounded-full bg-sky-500 text-white font-semibold hover:bg-sky-600"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Elements
+    const createBtn = document.getElementById("create-btn");
+    const modalBackdrop = document.getElementById("modal-backdrop");
+    const cancelBtn = document.getElementById("cancel-btn");
+    const eventForm = document.getElementById("event-form");
+    const toReviewList = document.getElementById("to-review-list");
+    const reviewedList = document.getElementById("reviewed-list");
+    const notificationBadge = document.getElementById("notification-badge");
+
+    // Data storage
+    let toReview = [];
+    let reviewed = [];
+
+    // Show modal
+    createBtn.addEventListener("click", () => {
+      modalBackdrop.classList.remove("hidden");
+    });
+
+    // Hide modal
+    cancelBtn.addEventListener("click", () => {
+      modalBackdrop.classList.add("hidden");
+      eventForm.reset();
+    });
+
+    // Close modal on backdrop click
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) {
+        modalBackdrop.classList.add("hidden");
+        eventForm.reset();
+      }
+    });
+
+    // Update notification badge count
+    function updateNotificationBadge() {
+      const count = toReview.length;
+      if (count > 0) {
+        notificationBadge.textContent = count;
+        notificationBadge.classList.remove("hidden");
+      } else {
+        notificationBadge.classList.add("hidden");
+      }
+    }
+
+    // Render functions
+    function renderWork() {
+      // To review
+      if (toReview.length === 0) {
+        toReviewList.textContent = "No upcoming work";
+      } else {
+        toReviewList.innerHTML = "";
+        toReview.forEach((item, idx) => {
+          const div = document.createElement("div");
+          div.className = "text-left cursor-pointer hover:underline";
+          div.textContent = `${item.type.charAt(0).toUpperCase() + item.type.slice(1)}: ${item.title} (${new Date(item.date).toLocaleDateString()})`;
+          div.addEventListener("click", () => {
+            markReviewed(idx);
+          });
+          toReviewList.appendChild(div);
+        });
+      }
+
+      // Reviewed
+      if (reviewed.length === 0) {
+        reviewedList.classList.add("hidden");
+      } else {
+        reviewedList.classList.remove("hidden");
+        reviewedList.innerHTML = "";
+        reviewed.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "text-left line-through text-gray-500";
+          div.textContent = `${item.type.charAt(0).toUpperCase() + item.type.slice(1)}: ${item.title} (${new Date(item.date).toLocaleDateString()})`;
+          reviewedList.appendChild(div);
+        });
+      }
+
+      updateNotificationBadge();
+    }
+
+    // Mark item as reviewed
+    function markReviewed(index) {
+      const item = toReview.splice(index, 1)[0];
+      reviewed.push(item);
+      renderWork();
+    }
+
+    // On form submit
+    eventForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const type = eventForm["event-type"].value;
+      const title = eventForm["event-title"].value.trim();
+      const date = eventForm["event-date"].value;
+
+      if (!type || !title || !date) return;
+
+      const newItem = { type, title, date };
+
+      toReview.push(newItem);
+
+      renderWork();
+
+      modalBackdrop.classList.add("hidden");
+      eventForm.reset();
+    });
+
+    // Initial render
+    renderWork();
+    
+    function openModal() {
+           document.getElementById('chatbotModal').classList.remove('hidden');
+       }
+
+       function closeModal() {
+           document.getElementById('chatbotModal').classList.add('hidden');
+       }
+  </script>
+</body>
+</html>

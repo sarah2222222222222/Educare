@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>EDUcare - Modern Learning Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --secondary: #10b981;
+      --accent: #f59e0b;
+      --dark: #1e293b;
+      --light: #f8fafc;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
+    }
+    
+    .text-gradient {
+      background: linear-gradient(90deg, #4f46e5 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 1s ease-out forwards;
+    }
+    
+    .delay-100 { animation-delay: 100ms; }
+    .delay-200 { animation-delay: 200ms; }
+    .delay-300 { animation-delay: 300ms; }
+    .delay-400 { animation-delay: 400ms; }
+    .delay-500 { animation-delay: 500ms; }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .testimonial-card {
+      transition: all 0.5s ease;
+    }
+    
+    .feature-icon {
+      transition: all 0.3s ease;
+    }
+    
+    .feature-icon:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, var(--primary) 0%, #6366f1 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+    }
+    
+    .btn-secondary {
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="fixed w-full bg-white shadow-sm z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <span class="text-2xl font-bold text-gradient">EDUcare</span>
+          </div>
+          <div class="hidden md:ml-10 md:flex md:space-x-8">
+            <a href="#" class="nav-link text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">Home</a>
+            <a href="#features" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">Features</a>
+            <a href="#how-it-works" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">How It Works</a>
+            <a href="#testimonials" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">Testimonials</a>
+            <a href="#pricing" class="nav-link text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">Pricing</a>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center space-x-4">
+          <a href="#" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">عربي</a>
+          <a href="login.html" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Login</a>
+          <a href="signup.html" class="btn-primary text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm">Get Started</a>
+        </div>
+        <div class="-mr-2 flex md:hidden">
+          <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none">
+            <span class="sr-only">Open main menu</span>
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-24 pb-12 md:pt-32 md:pb-20 gradient-bg text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+        <div class="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left fade-in">
+          <h1 class="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl">
+            <span class="block">Making</span>
+            <span class="block text-yellow-300">Learning</span>
+            <span class="block">Easier Than Ever</span>
+          </h1>
+          <p class="mt-3 text-base text-blue-100 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+            Personalized learning strategies and instant AI support to help you succeed with less stress and more efficiency.
+          </p>
+          <div class="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+              <a href="signup.html" class="btn-primary flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white md:py-4 md:text-lg md:px-10">
+                Get Started
+              </a>
+              <a href="#features" class="btn-secondary flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 md:py-4 md:text-lg md:px-10">
+                Learn More
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center fade-in delay-300">
+          <div class="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
+            <div class="relative block w-full bg-white rounded-lg overflow-hidden">
+              <img class="w-full" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Students learning together">
+              <div class="absolute inset-0 bg-gradient-to-t from-indigo-600 to-transparent opacity-70"></div>
+              <div class="absolute bottom-0 left-0 p-6">
+                <h3 class="text-lg font-medium text-white">Join 50,000+ Happy Learners</h3>
+                <p class="mt-1 text-sm text-indigo-100">Start your journey today</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div class="text-center fade-in">
+          <div class="text-4xl font-extrabold text-indigo-600">150+</div>
+          <div class="mt-2 text-sm font-medium text-gray-500">Classrooms Weekly</div>
+        </div>
+        <div class="text-center fade-in delay-100">
+          <div class="text-4xl font-extrabold text-green-500">95%</div>
+          <div class="mt-2 text-sm font-medium text-gray-500">Success Rate</div>
+        </div>
+        <div class="text-center fade-in delay-200">
+          <div class="text-4xl font-extrabold text-yellow-500">10K+</div>
+          <div class="mt-2 text-sm font-medium text-gray-500">Active Students</div>
+        </div>
+        <div class="text-center fade-in delay-300">
+          <div class="text-4xl font-extrabold text-purple-500">35+</div>
+          <div class="mt-2 text-sm font-medium text-gray-500">Languages Supported</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:text-center fade-in">
+        <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Features</h2>
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          A better way to learn
+        </p>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+          EDUcare combines cutting-edge technology with proven educational methods.
+        </p>
+      </div>
+
+      <div class="mt-16">
+        <div class="space-y-16 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16">
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover fade-in">
+            <div class="feature-icon flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+              <i class="fas fa-robot text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">AI Learning Companion</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Your personal assistant to help with questions, motivation, and tracking achievements 24/7.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover fade-in delay-100">
+            <div class="feature-icon flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white">
+              <i class="fas fa-brain text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">Personalized Learning</h3>
+              <p class="mt-2 text-base text-gray-500">
+                AI-generated content tailored to each student's needs, level, and learning style.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover fade-in delay-200">
+            <div class="feature-icon flex items-center justify-center h-12 w-12 rounded-md bg-yellow-500 text-white">
+              <i class="fas fa-universal-access text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">Accessibility Focus</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Tools designed for ADHD, autism, dyslexia and other special needs.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover fade-in">
+            <div class="feature-icon flex items-center justify-center h-12 w-12 rounded-md bg-purple-500 text-white">
+              <i class="fas fa-comments text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">Real-time Communication</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Built-in chat with automatic translation in 35+ languages.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover fade-in delay-100">
+            <div class="feature-icon flex items-center justify-center h-12 w-12 rounded-md bg-red-500 text-white">
+              <i class="fas fa-calendar-alt text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">Smart Scheduling</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Automated reminders and calendar integration to keep everyone organized.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover fade-in delay-200">
+            <div class="feature-icon flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
+              <i class="fas fa-chart-line text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">Progress Tracking</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Detailed analytics and reports to monitor improvement over time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:text-center fade-in">
+        <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Process</h2>
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          How EDUcare Works
+        </p>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+          Simple steps to transform your learning experience
+        </p>
+      </div>
+
+      <div class="mt-16">
+        <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+          <div class="relative fade-in">
+            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white">
+              <span class="text-lg font-bold">1</span>
+            </div>
+            <div class="mt-5">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">Sign Up</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Create your free account in less than a minute. No credit card required.
+              </p>
+            </div>
+          </div>
+
+          <div class="relative mt-10 lg:mt-0 fade-in delay-100">
+            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-green-500 text-white">
+              <span class="text-lg font-bold">2</span>
+            </div>
+            <div class="mt-5">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">Set Up Your Profile</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Tell us about your learning goals, preferences, and any special needs.
+              </p>
+            </div>
+          </div>
+
+          <div class="relative mt-10 lg:mt-0 fade-in delay-200">
+            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-yellow-500 text-white">
+              <span class="text-lg font-bold">3</span>
+            </div>
+            <div class="mt-5">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">Start Learning</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Access personalized content, join classrooms, and get AI assistance.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-16 flex justify-center fade-in delay-300">
+          <div class="relative w-full max-w-4xl rounded-lg overflow-hidden">
+            <img class="w-full" src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Student using EDUcare">
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-30"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <a href="#" class="flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">
+                <i class="fas fa-play mr-2"></i> Watch Demo
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-16 bg-indigo-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:text-center fade-in">
+        <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Testimonials</h2>
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          What our students say
+        </p>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+          Don't just take our word for it - hear from our community
+        </p>
+      </div>
+
+      <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div class="bg-white p-8 rounded-xl shadow-sm testimonial-card fade-in">
+          <div class="flex items-center">
+            <img class="w-12 h-12 rounded-full" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-gray-900">Sarah Johnson</h3>
+              <p class="text-indigo-600">@GUC University</p>
+            </div>
+          </div>
+          <p class="mt-4 text-gray-600">
+            "EDUcare helped me stay organized with my assignments. I feel more confident studying because everything I need is in one place."
+          </p>
+          <div class="mt-4 flex">
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-xl shadow-sm testimonial-card fade-in delay-100">
+          <div class="flex items-center">
+            <img class="w-12 h-12 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mohamed Hamed">
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-gray-900">Mohamed Hamed</h3>
+              <p class="text-indigo-600">@MIU University</p>
+            </div>
+          </div>
+          <p class="mt-4 text-gray-600">
+            "My favorite part is getting instant updates from my teacher. No more guessing what to do or when assignments are due."
+          </p>
+          <div class="mt-4 flex">
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star-half-alt text-yellow-400"></i>
+          </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-xl shadow-sm testimonial-card fade-in delay-200">
+          <div class="flex items-center">
+            <img class="w-12 h-12 rounded-full" src="https://randomuser.me/api/portraits/men/75.jpg" alt="Seif Diaa">
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-gray-900">Seif Diaa</h3>
+              <p class="text-indigo-600">@Cairo University</p>
+            </div>
+          </div>
+          <p class="mt-4 text-gray-600">
+            "It helps me be more independent. I don't need to rely on others to know what's going on in my classes."
+          </p>
+          <div class="mt-4 flex">
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+            <i class="fas fa-star text-yellow-400"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:text-center fade-in">
+        <h2 class="text-base text-indigo-600 font-semibold tracking-wide uppercase">Pricing</h2>
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          Simple, transparent pricing
+        </p>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+          Choose the plan that works best for you
+        </p>
+      </div>
+
+      <div class="mt-16 space-y-8 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-x-8">
+        <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden fade-in">
+          <div class="px-6 py-8">
+            <h3 class="text-lg font-medium text-gray-900">Free</h3>
+            <p class="mt-4 flex items-baseline">
+              <span class="text-5xl font-extrabold tracking-tight">$0</span>
+              <span class="ml-1 text-xl font-semibold">/month</span>
+            </p>
+            <p class="mt-4 text-sm text-gray-500">
+              Perfect for trying out EDUcare
+            </p>
+          </div>
+          <div class="px-6 pt-6 pb-8 bg-gray-50">
+            <h4 class="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h4>
+            <ul class="mt-6 space-y-4">
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Basic classroom access</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Limited AI assistance</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Basic progress tracking</p>
+              </li>
+            </ul>
+            <div class="mt-8">
+              <a href="signup.html" class="block w-full px-6 py-3 text-center font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-md">
+                Get started
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border-2 border-indigo-600 rounded-lg shadow-lg overflow-hidden fade-in delay-100">
+          <div class="px-6 py-8 bg-indigo-600 text-white">
+            <h3 class="text-lg font-medium">Premium</h3>
+            <p class="mt-4 flex items-baseline">
+              <span class="text-5xl font-extrabold tracking-tight">$9.99</span>
+              <span class="ml-1 text-xl font-semibold">/month</span>
+            </p>
+            <p class="mt-4 text-sm text-indigo-100">
+              Best for serious learners
+            </p>
+          </div>
+          <div class="px-6 pt-6 pb-8 bg-gray-50">
+            <h4 class="text-xs font-medium text-gray-900 tracking-wide uppercase">Everything in Free, plus</h4>
+            <ul class="mt-6 space-y-4">
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Unlimited AI assistance</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Advanced analytics</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Priority support</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Offline access</p>
+              </li>
+            </ul>
+            <div class="mt-8">
+              <a href="signup.html" class="block w-full px-6 py-3 text-center font-medium bg-indigo-600 text-white hover:bg-indigo-700 rounded-md">
+                Get started
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden fade-in delay-200">
+          <div class="px-6 py-8">
+            <h3 class="text-lg font-medium text-gray-900">Institution</h3>
+            <p class="mt-4 flex items-baseline">
+              <span class="text-5xl font-extrabold tracking-tight">Custom</span>
+            </p>
+            <p class="mt-4 text-sm text-gray-500">
+              For schools and organizations
+            </p>
+          </div>
+          <div class="px-6 pt-6 pb-8 bg-gray-50">
+            <h4 class="text-xs font-medium text-gray-900 tracking-wide uppercase">Everything in Premium, plus</h4>
+            <ul class="mt-6 space-y-4">
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Admin dashboard</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Bulk user management</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Custom branding</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0 h-5 w-5 text-green-500">
+                  <i class="fas fa-check"></i>
+                </div>
+                <p class="ml-3 text-sm text-gray-700">Dedicated account manager</p>
+              </li>
+            </ul>
+            <div class="mt-8">
+              <a href="#" class="block w-full px-6 py-3 text-center font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-md">
+                Contact sales
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-indigo-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
+        <div class="fade-in">
+          <h2 class="text-3xl font-extrabold sm:text-4xl">
+            <span class="block">Ready to transform your learning?</span>
+          </h2>
+          <p class="mt-3 max-w-2xl text-xl text-indigo-100">
+            Join thousands of students who are achieving more with less stress.
+          </p>
+        </div>
+        <div class="mt-8 lg:mt-0 fade-in delay-100">
+          <div class="inline-flex rounded-md shadow">
+            <a href="signup.html" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50">
+              Get started for free
+            </a>
+          </div>
+          <div class="ml-3 inline-flex">
+            <a href="#" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-700 hover:bg-indigo-800">
+              Learn more
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-white text-sm font-semibold tracking-wider uppercase">Product</h3>
+          <ul class="mt-4 space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white">Features</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Pricing</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Classrooms</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">AI Companion</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-sm font-semibold tracking-wider uppercase">Company</h3>
+          <ul class="mt-4 space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white">About</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Careers</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-sm font-semibold tracking-wider uppercase">Resources</h3>
+          <ul class="mt-4 space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Community</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Webinars</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Tutorials</a></li>
+          </ul>
+        </div>
+        <div>
+          <

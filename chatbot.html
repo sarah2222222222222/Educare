@@ -1,0 +1,334 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chatbot - Summarize, Quiz &amp; Listen
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #d9e4ff 100%);
+    }
+    /* Scrollbar for quiz container */
+    #quiz-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    #quiz-container::-webkit-scrollbar-track {
+      background: #e0e7ff;
+      border-radius: 4px;
+    }
+    #quiz-container::-webkit-scrollbar-thumb {
+      background-color: #6366f1;
+      border-radius: 4px;
+    }
+  </style>
+ </head>
+ <body class="min-h-screen flex flex-col">
+  <header class="bg-white/90 backdrop-blur-md shadow-lg sticky top-0 z-30">
+   <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 flex items-center justify-between h-20">
+    <div class="flex items-center space-x-4">
+     <img alt="Chatbot logo with letters CB in blue and white background" class="w-12 h-12 rounded-lg shadow-md" height="48" src="../assets/Images/ChatGPT Image Apr 12, 2025, 07_43_14 PM.png" width="48"/>
+     <h1 class="text-3xl font-extrabold text-indigo-700 tracking-wide select-none">
+      Smart Study Chatbot
+     </h1>
+    </div>
+    <nav class="hidden md:flex space-x-10 text-indigo-600 font-semibold text-lg tracking-wide">
+     <a class="hover:text-indigo-900 transition duration-300 ease-in-out" href="./index.html">
+      Home
+     </a>
+    </nav>
+    <button aria-label="Open menu" class="md:hidden text-indigo-600 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 rounded" id="mobile-menu-button">
+     <i class="fas fa-bars fa-lg">
+     </i>
+    </button>
+   </div>
+   <nav aria-label="Mobile menu" class="md:hidden bg-white/95 backdrop-blur-sm border-t border-indigo-200 shadow-lg hidden" id="mobile-menu">
+    <a class="block px-6 py-4 text-indigo-700 hover:bg-indigo-100 font-semibold text-lg border-b border-indigo-200" href="./index.html">
+     Home
+    </a>
+   </nav>
+  </header>
+  <main class="flex-grow max-w-6xl mx-auto px-6 sm:px-10 lg:px-12 py-12">
+   <h2 class="text-4xl font-extrabold text-indigo-900 mb-12 text-center drop-shadow-md">
+    Upload Material &amp; Chat with AI
+   </h2>
+   <section class="mb-14 max-w-3xl mx-auto">
+    <label class="block mb-3 text-xl font-semibold text-indigo-600" for="file-upload">
+     Upload your material (PDF, TXT, DOCX)
+    </label>
+    <div class="relative rounded-lg shadow-lg bg-white border border-indigo-300 hover:border-indigo-500 transition duration-300">
+     <input accept=".pdf,.txt,.docx" class="block w-full text-indigo-900 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-lg file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer focus:outline-none focus:ring-4 focus:ring-indigo-400 focus:ring-opacity-50" id="file-upload" type="file"/>
+    </div>
+   </section>
+   <section class="mb-14 max-w-3xl mx-auto">
+    <label class="block mb-3 text-xl font-semibold text-indigo-800" for="chat-input">
+     Ask about your material
+    </label>
+    <div class="flex space-x-3">
+     <input aria-label="Chat input" class="flex-grow rounded-lg border-2 border-indigo-300 px-5 py-4 text-indigo-900 text-lg font-medium placeholder-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-400 focus:ring-opacity-50 transition" id="chat-input" placeholder="Type your question here..." type="text"/>
+     <button aria-label="Send question" class="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-6 py-4 shadow-lg flex items-center justify-center transition duration-300" id="send-btn" title="Send question">
+      <i class="fas fa-paper-plane fa-lg">
+      </i>
+     </button>
+    </div>
+   </section>
+   <section class="mb-14 max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl border border-indigo-200 p-8">
+    <h3 class="text-3xl font-bold text-indigo-900 mb-6 border-b border-indigo-300 pb-3 select-none">
+     Chatbot Response
+    </h3>
+    <div aria-live="polite" class="min-h-[180px] p-6 rounded-xl bg-indigo-50 text-indigo-900 text-lg leading-relaxed whitespace-pre-wrap shadow-inner" id="chatbot-response">
+     Please upload material and ask a question to get started.
+    </div>
+   </section>
+   <section class="mb-14 max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl border border-indigo-200 p-8">
+    <h3 class="text-3xl font-bold text-indigo-900 mb-6 border-b border-indigo-300 pb-3 select-none">
+     Generated Quiz
+    </h3>
+    <div class="max-h-[420px] overflow-y-auto space-y-8" id="quiz-container">
+     <p class="text-indigo-500 text-lg text-center select-none">
+      Upload material and ask questions to generate quizzes here.
+     </p>
+    </div>
+   </section>
+   <section class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl border border-indigo-200 p-8">
+    <h3 class="text-3xl font-bold text-indigo-900 mb-6 border-b border-indigo-300 pb-3 select-none">
+     Listen to Material
+    </h3>
+    <div class="flex flex-col space-y-5">
+     <textarea aria-label="Material text for listening" class="w-full border-2 border-indigo-300 rounded-xl p-5 text-indigo-900 text-lg font-medium resize-none focus:outline-none focus:ring-4 focus:ring-indigo-400 focus:ring-opacity-50 shadow-inner" id="listen-textarea" placeholder="Material text will appear here for listening..." readonly="" rows="7"></textarea>
+     <div class="flex justify-center space-x-8">
+      <button aria-label="Play material audio" class="bg-green-600 hover:bg-green-700 active:bg-green-800 text-white px-8 py-3 rounded-xl shadow-lg flex items-center space-x-3 transition duration-300" id="play-btn" title="Play material audio">
+       <i class="fas fa-play fa-lg">
+       </i>
+       <span class="text-lg font-semibold select-none">
+        Play
+       </span>
+      </button>
+      <button aria-label="Pause material audio" class="bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-white px-8 py-3 rounded-xl shadow-lg flex items-center space-x-3 transition duration-300" id="pause-btn" title="Pause material audio">
+       <i class="fas fa-pause fa-lg">
+       </i>
+       <span class="text-lg font-semibold select-none">
+        Pause
+       </span>
+      </button>
+      <button aria-label="Stop material audio" class="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white px-8 py-3 rounded-xl shadow-lg flex items-center space-x-3 transition duration-300" id="stop-btn" title="Stop material audio">
+       <i class="fas fa-stop fa-lg">
+       </i>
+       <span class="text-lg font-semibold select-none">
+        Stop
+       </span>
+      </button>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-indigo-900 text-indigo-200 py-8 mt-auto select-none">
+   <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 text-center text-sm font-medium tracking-wide">
+    © 2024 Smart Study Chatbot. All rights reserved.
+   </div>
+  </footer>
+  <script>
+   // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Elements
+    const fileUpload = document.getElementById('file-upload');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const chatbotResponse = document.getElementById('chatbot-response');
+    const quizContainer = document.getElementById('quiz-container');
+    const listenTextarea = document.getElementById('listen-textarea');
+    const playBtn = document.getElementById('play-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const stopBtn = document.getElementById('stop-btn');
+
+    let materialText = '';
+    let synth = window.speechSynthesis;
+    let utterance;
+    let isPlaying = false;
+
+    // Utility: Read file as text (supports txt, docx, pdf)
+    async function readFileContent(file) {
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (ext === 'txt') {
+        return await file.text();
+      } else if (ext === 'pdf') {
+        // Use PDF.js to extract text from PDF
+        // Since external libs are not allowed, fallback to placeholder text
+        return 'PDF reading is not supported in this demo. Please upload TXT or DOCX files.';
+      } else if (ext === 'docx') {
+        // Use docx parser - not possible without external libs, fallback
+        return 'DOCX reading is not supported in this demo. Please upload TXT files.';
+      } else {
+        return 'Unsupported file type. Please upload TXT files.';
+      }
+    }
+
+    // Simulated AI summarization and quiz generation (mock)
+    function generateSummary(text) {
+      if (!text.trim()) return 'No material text available to summarize.';
+      // Simple mock summary: first 3 sentences or first 300 chars
+      const sentences = text.match(/[^\.!\?]+[\.!\?]+/g) || [];
+      if (sentences.length >= 3) {
+        return sentences.slice(0, 3).join(' ');
+      }
+      return text.slice(0, 300) + (text.length > 300 ? '...' : '');
+    }
+
+    function generateQuiz(text) {
+      if (!text.trim()) return [];
+      // Mock quiz: 3 questions with 4 options each, random correct answer
+      return [
+        {
+          question: 'What is the main topic of the material?',
+          options: [
+            'Option A: Topic A',
+            'Option B: Topic B',
+            'Option C: Topic C',
+            'Option D: Topic D',
+          ],
+          answer: 1,
+        },
+        {
+          question: 'Which statement is true according to the material?',
+          options: [
+            'Option A: Statement A',
+            'Option B: Statement B',
+            'Option C: Statement C',
+            'Option D: Statement D',
+          ],
+          answer: 2,
+        },
+        {
+          question: 'What is a key takeaway from the material?',
+          options: [
+            'Option A: Takeaway A',
+            'Option B: Takeaway B',
+            'Option C: Takeaway C',
+            'Option D: Takeaway D',
+          ],
+          answer: 0,
+        },
+      ];
+    }
+
+    // Render quiz questions
+    function renderQuiz(quiz) {
+      if (!quiz.length) {
+        quizContainer.innerHTML =
+          '<p class="text-indigo-500 text-lg text-center select-none">No quiz available. Ask questions to generate quizzes.</p>';
+        return;
+      }
+      quizContainer.innerHTML = '';
+      quiz.forEach((q, i) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'space-y-3 bg-indigo-50 rounded-xl p-5 shadow-md border border-indigo-200';
+
+        const questionTitle = document.createElement('h4');
+        questionTitle.className = 'font-semibold text-indigo-900 text-xl';
+        questionTitle.textContent = `Q${i + 1}: ${q.question}`;
+        questionDiv.appendChild(questionTitle);
+
+        const optionsList = document.createElement('ul');
+        optionsList.className = 'list-disc list-inside space-y-1 text-indigo-800 text-lg';
+
+        q.options.forEach((opt, idx) => {
+          const li = document.createElement('li');
+          li.textContent = opt;
+          li.className = 'hover:text-indigo-600 cursor-default select-text';
+          optionsList.appendChild(li);
+        });
+
+        questionDiv.appendChild(optionsList);
+        quizContainer.appendChild(questionDiv);
+      });
+    }
+
+    // Handle file upload
+    fileUpload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      chatbotResponse.textContent = 'Reading file...';
+      const text = await readFileContent(file);
+      materialText = text;
+      listenTextarea.value = materialText;
+      chatbotResponse.textContent = 'Material uploaded successfully. You can now ask questions.';
+      quizContainer.innerHTML =
+        '<p class="text-indigo-500 text-lg text-center select-none">Upload material and ask questions to generate quizzes here.</p>';
+    });
+
+    // Handle send question
+    sendBtn.addEventListener('click', () => {
+      const question = chatInput.value.trim();
+      if (!question) return;
+      if (!materialText) {
+        chatbotResponse.textContent = 'Please upload material first.';
+        return;
+      }
+      chatbotResponse.textContent = 'Processing your question...';
+
+      // Simulate AI response with timeout
+      setTimeout(() => {
+        // For demo: summarize material if question contains "summary"
+        // generate quiz if question contains "quiz"
+        // else generic answer
+        let response = '';
+        if (/summary/i.test(question)) {
+          response = generateSummary(materialText);
+        } else if (/quiz/i.test(question)) {
+          response = 'Quiz generated below based on your material.';
+          const quiz = generateQuiz(materialText);
+          renderQuiz(quiz);
+        } else {
+          response =
+            "I'm here to help! Try asking for a 'summary' or a 'quiz' based on your material.";
+        }
+        chatbotResponse.textContent = response;
+      }, 1000);
+
+      chatInput.value = '';
+    });
+
+    // Speech synthesis controls
+    playBtn.addEventListener('click', () => {
+      if (!materialText.trim()) {
+        alert('No material text available to read.');
+        return;
+      }
+      if (isPlaying) return;
+      utterance = new SpeechSynthesisUtterance(materialText);
+      utterance.lang = 'en-US';
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.onend = () => {
+        isPlaying = false;
+      };
+      synth.speak(utterance);
+      isPlaying = true;
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      if (synth.speaking && !synth.paused) {
+        synth.pause();
+        isPlaying = false;
+      }
+    });
+
+    stopBtn.addEventListener('click', () => {
+      if (synth.speaking) {
+        synth.cancel();
+        isPlaying = false;
+      }
+    });
+  </script>
+ </body>
+</html>

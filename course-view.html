@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Courses | Learning Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f9fafb;
+      }
+      .course-card {
+        transition: all 0.3s ease;
+      }
+      .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .course-badge {
+        position: absolute;
+        top: -12px;
+        right: 16px;
+        padding: 0 10px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <!-- Header with Cart Icon -->
+    <header
+      class="bg-white shadow-sm px-6 py-4 flex justify-between items-center"
+    >
+      <h2 class="text-xl font-bold text-gray-800">Learning Hub</h2>
+      <div class="relative">
+        <a
+          href="cart.html"
+          class="text-gray-600 hover:text-indigo-600 text-2xl"
+        >
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+        <span
+          id="cart-count"
+          class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full"
+          style="display: none"
+        >
+          0
+        </span>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 py-12">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-gray-900 mb-3">
+          Explore Your Courses
+        </h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Continue your learning journey with these vibrant courses
+        </p>
+      </div>
+
+      <div
+        id="courseGrid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        <div class="col-span-full">
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            id="loadingSkeleton"
+          ></div>
+        </div>
+      </div>
+
+      <div id="emptyState" class="text-center py-16 hidden">
+        <div
+          class="mx-auto w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mb-6"
+        >
+          <i class="fas fa-book-open text-gray-400 text-5xl"></i>
+        </div>
+        <h3 class="text-2xl font-semibold text-gray-800 mb-2">
+          No courses available
+        </h3>
+        <p class="text-gray-600 mb-6 max-w-md mx-auto">
+          You haven't enrolled in any courses yet. Start your learning journey
+          today!
+        </p>
+        <button
+          class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition"
+        >
+          Browse All Courses
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const colorPalette = [
+        {
+          bg: "bg-gradient-to-br from-blue-500 to-blue-600",
+          text: "text-white",
+          badge: "bg-blue-100 text-blue-800",
+        },
+        {
+          bg: "bg-gradient-to-br from-emerald-500 to-emerald-600",
+          text: "text-white",
+          badge: "bg-emerald-100 text-emerald-800",
+        },
+        {
+          bg: "bg-gradient-to-br from-amber-500 to-amber-600",
+          text: "text-white",
+          badge: "bg-amber-100 text-amber-800",
+        },
+        {
+          bg: "bg-gradient-to-br from-rose-500 to-rose-600",
+          text: "text-white",
+          badge: "bg-rose-100 text-rose-800",
+        },
+      ];
+
+      function showLoadingSkeleton() {
+        const container = document.getElementById("loadingSkeleton");
+        container.innerHTML = "";
+        for (let i = 0; i < 6; i++) {
+          container.innerHTML += `
+            <div class="course-card bg-white rounded-xl shadow-md overflow-hidden">
+              <div class="h-40 bg-gray-200 animate-pulse"></div>
+              <div class="p-6">
+                <div class="h-6 bg-gray-200 rounded-full animate-pulse mb-4 w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded-full animate-pulse mb-2 w-1/2"></div>
+                <div class="h-4 bg-gray-200 rounded-full animate-pulse w-1/3"></div>
+                <div class="h-10 bg-gray-200 rounded-lg animate-pulse mt-6"></div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      async function fetchCourses() {
+        try {
+          showLoadingSkeleton();
+          const token = localStorage.getItem("token");
+          if (!token) {
+            window.location.href = "/login";
+            return;
+          }
+
+          const response = await fetch("http://localhost:3000/course", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const result = await response.json();
+
+          if (!result.data || result.data.length === 0) {
+            document.getElementById("loadingSkeleton").classList.add("hidden");
+            document.getElementById("emptyState").classList.remove("hidden");
+            return;
+          }
+
+          renderCourses(result.data);
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        }
+      }
+
+      // ✅ Updated function: POST to cart API
+      async function addToCart(courseId) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          alert("Please log in to add a course to your cart.");
+          return;
+        }
+
+        try {
+          const response = await fetch("http://localhost:3000/cart/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              courseId: [courseId],
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert("Course added to cart successfully!");
+            incrementCartCount();
+          } else {
+            alert(result.message || "Failed to add course to cart.");
+          }
+        } catch (error) {
+          console.error("Add to cart failed:", error);
+          alert("An error occurred while adding to cart.");
+        }
+      }
+
+      function addToFavorites(courseId) {
+        alert("Favorites functionality not implemented yet.");
+      }
+
+      function renderCourses(courses) {
+        const container = document.getElementById("courseGrid");
+        container.innerHTML = "";
+
+        if (courses.length === 0) {
+          document.getElementById("emptyState").classList.remove("hidden");
+          return;
+        }
+
+        courses.forEach((course, index) => {
+          const colors = colorPalette[index % colorPalette.length];
+
+          const courseCard = document.createElement("div");
+          courseCard.className =
+            "course-card bg-white rounded-xl shadow-md overflow-hidden h-full flex flex-col";
+
+          courseCard.innerHTML = `
+            <div class="relative">
+              <div class="h-40 ${colors.bg} flex items-center justify-center">
+                <span class="text-5xl font-bold ${
+                  colors.text
+                }">${course.title.charAt(0)}</span>
+              </div>
+              <span class="course-badge ${colors.badge}">${
+            course.category || "General"
+          }</span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">${
+                  course.title
+                }</h3>
+                <p class="text-gray-600 mb-4 line-clamp-2">${
+                  course.description || "No description available"
+                }</p>
+              </div>
+              <div class="mt-4 pt-4 border-t border-gray-100">
+                <button onclick="addToCart('${course._id}')"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg font-medium mb-2">
+                  Add to Cart
+                </button>
+                <button onclick="addToFavorites('${course._id}')"
+                        class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium">
+                  Add to Favorites
+                </button>
+                <a href="viewcorse-Indvidal.html?id=${course._id}" 
+                   class="inline-flex items-center justify-center w-full bg-gray-900 hover:bg-gray-800 text-white px-4 py-3 rounded-lg font-medium transition mt-2">
+                  View Course
+                  <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+              </div>
+            </div>
+          `;
+
+          container.appendChild(courseCard);
+        });
+      }
+
+      function incrementCartCount() {
+        const cartCount = document.getElementById("cart-count");
+        let count = parseInt(cartCount.textContent) || 0;
+        count += 1;
+        cartCount.textContent = count;
+        cartCount.style.display = "inline-block";
+      }
+
+      document.addEventListener("DOMContentLoaded", fetchCourses);
+    </script>
+  </body>
+</html>

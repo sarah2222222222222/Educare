@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Class Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f9fafb;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      .floating {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+      }
+
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+
+      .tooltip {
+        position: relative;
+      }
+
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 120px;
+        background-color: #0ea5e9;
+        color: white;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 12px;
+      }
+
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        color: #64748b;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .nav-item:hover {
+        background-color: #f0f9ff;
+        color: #0ea5e9;
+      }
+
+      .nav-item.active {
+        background-color: #f0f9ff;
+        color: #0ea5e9;
+        font-weight: 600;
+      }
+
+      .post-card {
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+      }
+
+      .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div
+      class="min-h-screen flex flex-col md:flex-row max-w-7xl mx-auto p-4 gap-6"
+    >
+      <!-- Left Sidebar -->
+      <aside
+        class="w-full md:w-20 lg:w-56 bg-white rounded-xl shadow-sm p-3 flex flex-col items-center md:items-start transition-all duration-300"
+      >
+        <a
+          href="./index.html"
+          class="mb-8 flex items-center gap-3 text-sky-600"
+        >
+          <div
+            class="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center"
+          >
+            <i class="fas fa-graduation-cap text-sky-600 text-xl"></i>
+          </div>
+          <span class="font-bold hidden lg:block">EduConnect</span>
+        </a>
+
+        <nav class="flex-1 w-full flex flex-col gap-1">
+          <a href="./dash.html" class="nav-item active">
+            <i class="fas fa-home text-lg"></i>
+            <span class="hidden lg:inline">Dashboard</span>
+          </a>
+          <a href="./stream.html" class="nav-item">
+            <i class="fas fa-chalkboard text-lg"></i>
+            <span class="hidden lg:inline">Classroom</span>
+          </a>
+          <a href="./submission.html" class="nav-item">
+            <!-- Added submission link -->
+            <i class="fas fa-file-upload text-lg"></i>
+            <span class="hidden lg:inline">Submissions</span>
+          </a>
+          <a href="./favorites.html" class="nav-item">
+            <i class="fas fa-star text-lg"></i>
+            <span class="hidden lg:inline">Favorites</span>
+          </a>
+          <a href="./archive.html" class="nav-item">
+            <i class="fas fa-archive text-lg"></i>
+            <span class="hidden lg:inline">Archive</span>
+          </a>
+          <a href="./calendar.html" class="nav-item">
+            <i class="fas fa-calendar-alt text-lg"></i>
+            <span class="hidden lg:inline">Calendar</span>
+          </a>
+          <a href="./settings.html" class="nav-item mt-4">
+            <i class="fas fa-cog text-lg"></i>
+            <span class="hidden lg:inline">Settings</span>
+          </a>
+        </nav>
+
+        <div class="mt-auto w-full">
+          <div
+            class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-semibold"
+            >
+              SO
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col gap-6">
+        <!-- Header -->
+        <header
+          class="bg-white rounded-xl shadow-sm p-4 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center"
+        >
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">
+              Classroom Dashboard
+            </h1>
+            <p class="text-sm text-gray-500">
+              Welcome back, <span id="welcome-name" class="font-medium"></span>!
+              Today is
+              <span id="currentDate" class="font-medium"></span>
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <button
+                class="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+                aria-label="Notifications"
+              >
+                <i class="fas fa-bell"></i>
+                <span
+                  class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"
+                ></span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Submission Quick Action Card -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">Quick Actions</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a
+              href="./submission.html"
+              class="bg-sky-50 hover:bg-sky-100 rounded-lg p-4 flex flex-col items-center justify-center transition cursor-pointer"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center mb-3"
+              >
+                <i class="fas fa-file-upload text-sky-600 text-xl"></i>
+              </div>
+              <h3 class="font-medium text-center">Submit Assignment</h3>
+              <p class="text-sm text-gray-500 text-center mt-1">
+                Upload your completed work
+              </p>
+            </a>
+            <a
+              id="teacher-view-assignments"
+              href="#"
+              onclick="window.location.href='view_submission.html';"
+              class="bg-purple-50 hover:bg-purple-100 rounded-lg p-4 flex flex-col items-center justify-center transition cursor-pointer hidden"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mb-3"
+              >
+                <i class="fas fa-tasks text-purple-600 text-xl"></i>
+              </div>
+              <h3 class="font-medium text-center">View Assignments</h3>
+              <p class="text-sm text-gray-500 text-center mt-1">
+                Check your pending work
+              </p>
+            </a>
+
+            <a
+              href="gradesystem.html"
+              class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex flex-col items-center justify-center transition cursor-pointer"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-3"
+              >
+                <i class="fas fa-graduation-cap text-green-600 text-xl"></i>
+              </div>
+              <h3 class="font-medium text-center">Grade System</h3>
+              <p class="text-sm text-gray-500 text-center mt-1">
+                View All student grades
+              </p>
+            </a>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div class="border-b border-gray-200">
+            <nav class="flex -mb-px">
+              <button class="tab-button active">
+                <i class="fas fa-stream mr-2"></i> Stream
+              </button>
+              <button class="tab-button">
+                <i class="fas fa-tasks mr-2"></i> Classwork
+              </button>
+              <button class="tab-button">
+                <i class="fas fa-users mr-2"></i> People
+              </button>
+              <button class="tab-button">
+                <i class="fas fa-calendar-alt mr-2"></i> Calendar
+              </button>
+            </nav>
+          </div>
+
+          <!-- Stream Content -->
+          <div class="p-4" id="streamContent">
+            <!-- Create Post Card -->
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm"
+              id="postInputSection"
+            >
+              <div class="flex-1">
+                <textarea
+                  id="postText"
+                  class="w-full border-0 focus:ring-2 focus:ring-sky-100 rounded-lg p-3 resize-none"
+                  rows="2"
+                  placeholder="Share something with your class..."
+                ></textarea>
+                <div class="flex items-center justify-between mt-3">
+                  <div class="flex gap-3 text-gray-500">
+                    <label class="cursor-pointer hover:text-sky-600 tooltip">
+                      <i class="fas fa-image"></i>
+                      <span class="tooltip-text">Add image</span>
+                      <input
+                        type="file"
+                        class="hidden"
+                        id="imageUpload"
+                        accept="image/*"
+                      />
+                    </label>
+                    <label class="cursor-pointer hover:text-sky-600 tooltip">
+                      <i class="fas fa-file-alt"></i>
+                      <span class="tooltip-text">Add file</span>
+                      <input
+                        type="file"
+                        class="hidden"
+                        id="fileUpload"
+                        accept=".pdf,.doc,.docx,.ppt,.pptx"
+                      />
+                    </label>
+                    <button
+                      class="hover:text-sky-600 tooltip"
+                      id="createEventBtn"
+                    >
+                      <i class="fas fa-calendar-plus"></i>
+                      <span class="tooltip-text">Create event</span>
+                    </button>
+                  </div>
+                  <button
+                    class="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition"
+                    id="postBtn"
+                  >
+                    Post
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Posts Feed -->
+            <div class="space-y-4" id="postsFeed">
+              <!-- Dynamic posts go here -->
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- AI Assistant Floating Button -->
+      <div class="fixed bottom-6 right-6 floating">
+        <a
+          href="./chatbot.html"
+          class="w-16 h-16 rounded-full bg-sky-600 shadow-lg hover:bg-sky-700 transition flex items-center justify-center text-white text-2xl"
+        >
+          <i class="fas fa-robot"></i>
+        </a>
+      </div>
+    </div>
+    <script>
+      // User Info Setup
+      const userData = {
+        firstName: localStorage.getItem("firstName"),
+        lastName: localStorage.getItem("lastName"),
+        email: localStorage.getItem("email"),
+        role: localStorage.getItem("role"),
+        userId: localStorage.getItem("userId"),
+      };
+
+      const welcomeName = document.getElementById("welcome-name");
+      if (welcomeName && userData.firstName) {
+        welcomeName.textContent = userData.firstName;
+      }
+
+      const currentDateElement = document.getElementById("currentDate");
+      if (currentDateElement) {
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        currentDateElement.textContent = new Date().toLocaleDateString(
+          undefined,
+          options
+        );
+      }
+
+      // Post Functions
+      async function fetchPosts() {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            window.location.href = "login.html";
+            return;
+          }
+
+          const userId = getUserIdFromToken(token);
+          if (!userId) {
+            console.error("User ID not found in token");
+            return;
+          }
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const classId = urlParams.get("classId");
+
+          if (!classId) {
+            showError("Class ID is missing in the URL.");
+            return;
+          }
+
+          // Use GET to fetch posts by classId
+          const response = await fetch(
+            `http://localhost:3000/post?classId=${classId}`,
+            {
+              method: "GET", // GET request to fetch posts
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const result = await response.json();
+
+          if (!result.data || result.data.length === 0) {
+            showError("No posts found for this class.");
+            return;
+          }
+
+          renderPosts(result.data, userId);
+        } catch (error) {
+          console.error("Error fetching posts:", error.message, error.stack);
+          showError("Failed to load posts. Please try again later.");
+        }
+      }
+
+      function getUserIdFromToken(token) {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        return payload.userId;
+      }
+
+      function renderPosts(posts, userId) {
+        const postsFeed = document.getElementById("postsFeed");
+        postsFeed.innerHTML = "";
+
+        if (posts.length === 0) {
+          postsFeed.innerHTML = ` 
+            <div class="bg-white rounded-xl p-4 text-center text-gray-500">
+              <i class="fas fa-comment-slash text-xl mb-2"></i>
+              <p>No posts yet. Be the first to share something!</p>
+            </div>`;
+          return;
+        }
+
+        posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        posts.forEach((post, index) => {
+          const postElement = createPostElement(post, index, userId);
+          postsFeed.appendChild(postElement);
+        });
+      }
+
+      function createPostElement(post, index) {
+        const postDate = new Date(post.createdAt);
+        const formattedDate = formatPostDate(postDate);
+
+        // Get current user info from localStorage
+        const currentUser = JSON.parse(localStorage.getItem("user")) || {};
+        const userId = currentUser._id;
+        const userFirstName = currentUser.firstName || "User";
+        const userLastName = currentUser.lastName || "";
+
+        const isUserPost = userId === post.userId;
+
+        // Use current user's name only if this post belongs to them
+        const postUserFirstName = isUserPost ? userFirstName : "User";
+        const postUserLastName = isUserPost ? userLastName : "";
+
+        const postElement = document.createElement("div");
+        postElement.className = `post-card bg-white border border-gray-200 rounded-xl p-4 shadow-sm fade-in`;
+        postElement.style.animationDelay = `${index * 0.1}s`;
+        postElement.dataset.postId = post._id;
+
+        const colors = [
+          "bg-sky-100",
+          "bg-amber-100",
+          "bg-purple-100",
+          "bg-green-100",
+          "bg-red-100",
+        ];
+        const textColors = [
+          "text-sky-700",
+          "text-amber-700",
+          "text-purple-700",
+          "text-green-700",
+          "text-red-700",
+        ];
+        const colorIndex = Math.floor(Math.random() * colors.length);
+        const avatarColor = colors[colorIndex];
+        const textColor = textColors[colorIndex];
+
+        postElement.innerHTML = `
+    <div class="flex items-start gap-3 mb-3">
+      <div class="w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center ${textColor} font-semibold">
+        ${postUserFirstName.charAt(0)}${postUserLastName.charAt(0)}
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold">${postUserFirstName} ${postUserLastName}</span>
+          <span class="text-xs text-gray-500">•</span>
+          <span class="text-xs text-gray-500">${formattedDate}</span>
+        </div>
+        <p class="text-sm mt-1 whitespace-pre-line">${
+          post.description || ""
+        }</p>
+        ${renderPostImages(post.image)}
+        ${renderPostFile(post.file)}
+        ${renderPostComments(post.comments)}
+      </div>
+    </div>
+    <div class="border-t border-gray-100 pt-3 mt-3 flex items-center justify-between">
+      <div class="flex gap-4 text-xs text-gray-500">
+        <button class="flex items-center gap-1 hover:text-sky-600"><i class="far fa-thumbs-up"></i> Like</button>
+        <button class="flex items-center gap-1 hover:text-sky-600 comment-toggle"><i class="far fa-comment"></i> Comment</button>
+      </div>
+      ${
+        isUserPost
+          ? `
+        <div class="relative">
+          <button class="text-gray-400 hover:text-gray-600 more-options-button"><i class="fas fa-ellipsis-h"></i></button>
+          <div class="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg hidden more-options-menu">
+            <button class="block w-full text-left px-4 py-2 text-sm text-sky-600 hover:bg-sky-50 edit-post">Edit</button>
+            <button class="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 delete-post">Delete</button>
+          </div>
+        </div>`
+          : ""
+      }
+    </div>
+    <div class="comment-form mt-3 hidden">
+      <div class="flex items-center gap-2">
+        <input type="text" class="flex-1 border border-gray-300 rounded-full px-3 py-1 text-sm" placeholder="Write a comment...">
+        <button class="bg-sky-600 text-white px-3 py-1 rounded-full text-sm">Post</button>
+      </div>
+    </div>
+  `;
+
+        return postElement;
+      }
+      function renderPostImages(images) {
+        if (!images || images.length === 0) return "";
+        return `
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            ${images
+              .map(
+                (img) => `
+              <img src="http://localhost:3000/uploads/${img}" 
+                   alt="Post image" 
+                   class="w-full h-32 object-cover rounded-lg border border-gray-200">`
+              )
+              .join("")}
+          </div>`;
+      }
+
+      function renderPostFile(file) {
+        if (!file) return "";
+        const fileExtension = file.split(".").pop().toLowerCase();
+        const iconClass = getFileIconClass(fileExtension);
+        return `
+          <div class="mt-3 flex items-center gap-2 p-2 bg-gray-50 rounded-lg border border-gray-200">
+            <i class="${iconClass} text-lg"></i>
+            <span class="text-sm font-medium">${file}</span>
+            <a href="http://localhost:3000/uploads/${file}" class="ml-auto text-xs text-sky-600 hover:underline" download>Download</a>
+          </div>`;
+      }
+
+      function renderPostComments(comments) {
+        if (!comments || comments.length === 0) return "";
+        const activeComments = comments.filter((c) => !c.deletedAt);
+        if (activeComments.length === 0) return "";
+        return `
+          <div class="mt-3 space-y-2">
+            ${activeComments
+              .map(
+                (comment) => `
+              <div class="flex items-start gap-2">
+                <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 text-xs font-semibold">
+                  ${comment.user?.charAt(0) || "U"}
+                </div>
+                <div class="flex-1 bg-gray-100 rounded-lg p-2">
+                  <div class="text-xs font-medium">User ${
+                    comment.user?.substring(0, 6) || "Unknown"
+                  }</div>
+                  <p class="text-xs mt-1">${comment.text}</p>
+                </div>
+              </div>`
+              )
+              .join("")}
+          </div>`;
+      }
+
+      function getFileIconClass(ext) {
+        const icons = {
+          pdf: "fas fa-file-pdf text-red-500",
+          doc: "fas fa-file-word text-blue-600",
+          docx: "fas fa-file-word text-blue-600",
+          ppt: "fas fa-file-powerpoint text-orange-500",
+          pptx: "fas fa-file-powerpoint text-orange-500",
+          xls: "fas fa-file-excel text-green-600",
+          xlsx: "fas fa-file-excel text-green-600",
+          jpg: "fas fa-file-image text-purple-500",
+          jpeg: "fas fa-file-image text-purple-500",
+          png: "fas fa-file-image text-purple-500",
+          txt: "fas fa-file-alt text-gray-500",
+          default: "fas fa-file text-gray-500",
+        };
+        return icons[ext] || icons.default;
+      }
+
+      function formatPostDate(date) {
+        const now = new Date();
+        const diff = (now - date) / 1000;
+        if (diff < 60) return "Just now";
+        if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
+      }
+
+      function showError(message) {
+        const postsFeed = document.getElementById("postsFeed");
+        postsFeed.innerHTML = `
+          <div class="bg-white rounded-xl p-4 text-center text-red-500">
+            <i class="fas fa-exclamation-circle text-xl mb-2"></i>
+            <p>${message}</p>
+          </div>`;
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        fetchPosts();
+
+        document.addEventListener("click", function (e) {
+          if (e.target.closest(".comment-toggle")) {
+            const postCard = e.target.closest(".post-card");
+            const commentForm = postCard.querySelector(".comment-form");
+            commentForm.classList.toggle("hidden");
+          }
+
+          if (e.target.closest(".more-options-button")) {
+            const menu = e.target
+              .closest(".relative")
+              .querySelector(".more-options-menu");
+            document.querySelectorAll(".more-options-menu").forEach((m) => {
+              if (m !== menu) m.classList.add("hidden");
+            });
+            menu.classList.toggle("hidden");
+          }
+        });
+        if (userData.role === "teacher") {
+          document
+            .getElementById("teacher-view-assignments")
+            .classList.remove("hidden");
+        }
+        const postBtn = document.getElementById("postBtn");
+        const postText = document.getElementById("postText");
+        const imageUpload = document.getElementById("imageUpload");
+        const fileUpload = document.getElementById("fileUpload");
+
+        postBtn.addEventListener("click", async function () {
+          const content = postText.value.trim();
+          const image = imageUpload.files[0];
+          const file = fileUpload.files[0];
+
+          if (!content && !image && !file) {
+            alert("Please write something or upload a file/image.");
+            return;
+          }
+
+          postBtn.disabled = true;
+          postBtn.textContent = "Posting...";
+
+          try {
+            const token = localStorage.getItem("token");
+            const userId = localStorage.getItem("userId"); // Get user ID from localStorage
+
+            if (!userId) {
+              alert("User ID is missing. Please login again.");
+              return;
+            }
+
+            // Extract classId from the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const classId = urlParams.get("classId");
+
+            if (!classId) {
+              alert("Class ID is missing in the URL.");
+              return;
+            }
+
+            // Prepare FormData for the POST request
+            const formData = new FormData();
+            formData.append("description", content);
+            formData.append("user", userId); // Ensure userId is sent
+            if (image) formData.append("image", image);
+            if (file) formData.append("file", file);
+
+            // POST request to the server with classId as part of the URL path
+            const response = await fetch(
+              `http://localhost:3000/post/${classId}`, // classId is part of the path, not query string
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+              }
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.message || "Failed to create post");
+            }
+
+            // Reset the form after successful post
+            postText.value = "";
+            imageUpload.value = "";
+            fileUpload.value = "";
+            fetchPosts(); // Assuming fetchPosts() updates the post feed
+
+            postBtn.disabled = false;
+            postBtn.textContent = "Post";
+          } catch (error) {
+            alert("Error creating post: " + error.message);
+            postBtn.disabled = false;
+            postBtn.textContent = "Post";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

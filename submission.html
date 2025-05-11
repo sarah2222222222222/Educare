@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>Student Assignment & Quiz Submission</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- ... header and nav unchanged ... -->
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h2 class="text-3xl font-semibold text-gray-900 mb-8 text-center">
+        Submit Your Assignment or Quiz
+      </h2>
+      <form
+        class="bg-white shadow-md rounded-lg p-8 space-y-6"
+        enctype="multipart/form-data"
+        id="submission-form"
+        novalidate
+      >
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1"
+            for="submission-type"
+            >Submission Type</label
+          >
+          <select
+            id="submission-type"
+            name="submissionType"
+            required
+            class="block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          >
+            <option disabled selected value="">Select type</option>
+            <option value="assignment">Assignment</option>
+            <option value="quiz">Quiz</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="courseId" class="block text-sm font-medium mb-1"
+            >Select Course</label
+          >
+          <select
+            id="courseId"
+            name="courseId"
+            required
+            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          >
+            <option value="">-- Select Course --</option>
+          </select>
+          <div
+            id="loading"
+            class="mt-2 text-center text-gray-600"
+            style="display: none"
+          >
+            <i class="fas fa-spinner fa-spin"></i> Loading courses...
+          </div>
+        </div>
+
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1"
+            for="title"
+            >Title</label
+          >
+          <input
+            id="title"
+            name="title"
+            required
+            type="text"
+            class="block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Enter the title of your submission"
+          />
+        </div>
+
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1"
+            for="description"
+            >Description (optional)</label
+          >
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            class="block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm resize-y"
+            placeholder="Add any notes or comments about your submission"
+          ></textarea>
+        </div>
+
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1"
+            for="file-upload"
+            >Upload File</label
+          >
+          <input
+            id="file-upload"
+            name="file"
+            type="file"
+            required
+            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,.rar,.7z,.jpg,.jpeg,.png,.gif,.mp4,.mov,.avi"
+            class="block w-full text-gray-700"
+          />
+          <p class="mt-1 text-xs text-gray-500">
+            Allowed file types: documents, images, videos, archives. Max size:
+            50MB.
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <button
+            type="submit"
+            class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-semibold rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
+          >
+            <i class="fas fa-upload mr-2"></i> Submit
+          </button>
+          <button
+            type="reset"
+            class="inline-flex justify-center py-2 px-6 border border-gray-300 shadow-sm text-sm font-semibold rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
+          >
+            <i class="fas fa-undo mr-2"></i> Reset
+          </button>
+        </div>
+      </form>
+
+      <section class="mt-16">
+        <h3 class="text-2xl font-semibold text-gray-900 mb-6 text-center">
+          Recent Submissions
+        </h3>
+        <ul id="recent-submissions" class="space-y-6">
+          <!-- Dynamic content will be loaded here -->
+        </ul>
+      </section>
+    </main>
+
+    <!-- ... footer unchanged ... -->
+
+    <script>
+      function parseJwt(token) {
+        try {
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          return JSON.parse(atob(base64));
+        } catch (e) {
+          console.error("Failed to parse JWT:", e);
+          return null;
+        }
+      }
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "login.html";
+      } else {
+        const decodedToken = parseJwt(token);
+        if (!decodedToken || !decodedToken.userId) {
+          alert("Invalid session. Redirecting to login.");
+          setTimeout(() => (window.location.href = "login.html"), 1000);
+        }
+      }
+
+      async function loadCourses() {
+        try {
+          document.getElementById("loading").style.display = "block";
+          const response = await fetch("http://localhost:3000/course", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await response.json();
+          const courseSelect = document.getElementById("courseId");
+          courseSelect.innerHTML =
+            '<option value="">-- Select Course --</option>';
+          data.data.forEach((course) => {
+            const option = document.createElement("option");
+            option.value = course._id;
+            option.textContent = course.title;
+            courseSelect.appendChild(option);
+          });
+        } catch (error) {
+          alert("Failed to load courses");
+        } finally {
+          document.getElementById("loading").style.display = "none";
+        }
+      }
+
+      async function handleSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        try {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+
+          const formData = new FormData(form);
+
+          // Map field names to match backend expectations
+          formData.set("type", formData.get("submissionType"));
+          formData.delete("submissionType");
+
+          formData.set("course", formData.get("courseId"));
+          formData.delete("courseId");
+
+          const response = await fetch("http://localhost:3000/submit", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || "Submission failed");
+          }
+
+          const result = await response.json();
+          alert(`Submission successful! ID: ${result.data._id}`);
+          form.reset();
+          loadRecentSubmissions();
+        } catch (error) {
+          alert(error.message);
+          console.error("Submission error:", error);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-upload mr-2"></i> Submit';
+        }
+      }
+
+      async function loadRecentSubmissions() {
+        try {
+          const response = await fetch("http://localhost:3000/submit/", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const data = await response.json();
+          const submissionsList = document.getElementById("recent-submissions");
+          submissionsList.innerHTML = "";
+
+          if (!data.data || data.data.length === 0) {
+            submissionsList.innerHTML =
+              '<li class="text-gray-500 text-center">No submissions found</li>';
+            return;
+          }
+
+          data.data.forEach((sub) => {
+            const li = document.createElement("li");
+            li.className = "bg-white p-4 rounded-lg shadow";
+            li.innerHTML = `
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-semibold text-lg">${sub.title}</h4>
+                <p class="text-sm text-gray-600">${sub.type} • ${
+              sub.customDate
+            }</p>
+                ${
+                  sub.description
+                    ? `<p class="mt-2 text-gray-700">${sub.description}</p>`
+                    : ""
+                }
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-medium ${
+                sub.type === "quiz"
+                  ? "bg-purple-100 text-purple-800"
+                  : "bg-blue-100 text-blue-800"
+              }">
+                ${sub.type}
+              </span>
+            </div>
+          `;
+            submissionsList.appendChild(li);
+          });
+        } catch (error) {
+          console.error("Error loading submissions:", error);
+        }
+      }
+
+      document
+        .getElementById("submission-form")
+        .addEventListener("submit", handleSubmit);
+      loadCourses();
+      loadRecentSubmissions();
+    </script>
+  </body>
+</html>

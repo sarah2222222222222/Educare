@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+      }
+      .course-card {
+        transition: all 0.3s ease;
+      }
+      .course-card:hover {
+        transform: translateY(-4px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+      <div id="courseDetail" class="text-center">
+        <!-- Course details will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <script>
+      // Fetch the course ID from the URL
+      function getCourseId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("id");
+      }
+
+      // Fetch course details from the API
+      async function fetchCourseDetail() {
+        const courseId = getCourseId();
+        if (!courseId) {
+          document.getElementById("courseDetail").innerHTML = `
+          <div class="text-center text-red-500 py-8">
+            Invalid course ID. Please check the URL.
+          </div>
+        `;
+          return;
+        }
+
+        try {
+          const token = localStorage.getItem("token");
+          const response = await fetch(
+            `http://localhost:3000/course/${courseId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const result = await response.json();
+
+          // If no course is found with that ID, show an error
+          if (!result.data) {
+            document.getElementById("courseDetail").innerHTML = `
+            <div class="text-center text-red-500 py-8">
+              Course not found. Please check the URL or try again later.
+            </div>
+          `;
+            return;
+          }
+
+          // Pass the course data to renderCourseDetail function
+          renderCourseDetail(result.data);
+        } catch (error) {
+          console.error("Error loading course details:", error);
+          document.getElementById("courseDetail").innerHTML = `
+          <div class="text-center text-red-500 py-8">
+            Failed to load course details. Please refresh the page.
+          </div>`;
+        }
+      }
+
+      // Render course details on the page
+      function renderCourseDetail(course) {
+        const container = document.getElementById("courseDetail");
+        container.innerHTML = `
+    <h1 class="text-3xl font-bold text-indigo-600 mb-4">${
+      course.title
+    }</h1> <!-- Title Color: Indigo -->
+
+    <div class="bg-white shadow-xl rounded-xl p-8">
+      <h3 class="text-2xl font-semibold text-gray-900 mb-4">Course Description</h3> <!-- Subtitle Color: Dark Gray -->
+      <p class="text-gray-700 mb-4">${
+        course.description || "No description available for this course."
+      }</p> <!-- Text Color: Gray -->
+
+      <h3 class="text-2xl font-semibold text-gray-900 mb-4">Course Details</h3> <!-- Subtitle Color: Dark Gray -->
+      <ul class="text-gray-700 list-disc list-inside">
+        <li><strong class="text-indigo-500">Price:</strong> ${
+          course.price || "Free"
+        }</li> <!-- Price Color: Indigo -->
+        <li><strong class="text-indigo-500">Level:</strong> ${
+          course.level || "Beginner"
+        }</li> <!-- Level Color: Indigo -->
+        <li><strong class="text-indigo-500">Language:</strong> ${
+          course.language || "English"
+        }</li> <!-- Language Color: Indigo -->
+      </ul>
+    </div>
+
+   
+  `;
+      }
+
+      document.addEventListener("DOMContentLoaded", fetchCourseDetail);
+    </script>
+  </body>
+</html>
