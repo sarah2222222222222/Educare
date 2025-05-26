@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Code | EDUcare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --secondary: #10b981;
+        --accent: #f59e0b;
+        --dark: #1e293b;
+        --light: #f8fafc;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f8fafc;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        background-image: url("https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+        background-size: cover;
+        background-position: center;
+        background-blend-mode: overlay;
+        background-color: rgba(248, 250, 252, 0.9);
+      }
+
+      .gradient-bg {
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--secondary) 100%
+        );
+      }
+
+      .input-focus:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, var(--primary) 0%, #6366f1 100%);
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+      }
+
+      .alert {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        border-radius: 4px;
+        color: white;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+
+      .alert.error {
+        background-color: #f44336;
+      }
+
+      .alert.success {
+        background-color: #4caf50;
+      }
+
+      .alert.info {
+        background-color: #2196f3;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -20px);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Verification Card -->
+    <div class="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden">
+      <div class="gradient-bg py-6 px-8 text-center">
+        <h1 class="text-3xl font-bold text-white">Enter Verification Code</h1>
+        <p class="mt-2 text-indigo-100">Check your email for the code</p>
+      </div>
+
+      <div class="p-8">
+        <form id="verificationForm" novalidate class="space-y-6">
+          <div>
+            <label
+              for="verificationCode"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Verification Code</label
+            >
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <i class="fas fa-key text-gray-400"></i>
+              </div>
+              <input
+                id="verificationCode"
+                name="verificationCode"
+                type="text"
+                required
+                class="input-focus pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none transition"
+                placeholder="Enter verification code"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              class="btn-primary w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Verify Code
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Handle form submission
+      document
+        .getElementById("verificationForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const resetCode = document
+            .getElementById("verificationCode")
+            .value.trim();
+
+          if (!resetCode) {
+            showAlert("Please enter the verification code.", "error");
+            return;
+          }
+
+          try {
+            // Send the POST request to verify the code
+            const response = await fetch(
+              "http://localhost:3000/auth/verifyRestPass",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ resetCode }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+              showAlert(
+                "Code verified! You can now reset your password.",
+                "success"
+              );
+              // Redirect to the password reset page
+              window.location.href = "resetPassword.html"; // Update this with your actual next page
+            } else {
+              showAlert(data.message || "Invalid verification code.", "error");
+            }
+          } catch (error) {
+            console.error("Error verifying code:", error);
+            showAlert("Something went wrong. Please try again.", "error");
+          }
+        });
+
+      function showAlert(message, type = "info") {
+        const oldAlert = document.querySelector(".alert");
+        if (oldAlert) oldAlert.remove();
+
+        const alert = document.createElement("div");
+        alert.className = `alert ${type}`;
+        alert.textContent = message;
+        document.body.appendChild(alert);
+        setTimeout(() => alert.remove(), 5000);
+      }
+    </script>
+  </body>
+</html>

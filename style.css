@@ -1,0 +1,559 @@
+/* You might have other global styles here in style.css */
+/* ================================
+   General Page Styling
+   ================================ */
+   body {
+    font-family:monospace;
+    background-color: #9edefa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+  .circle{
+    position: absolute;
+    border-radius: 50%;
+    background: rgb(43, 171, 230);
+    animation: ripple 15s infinite;
+    box-shadow: 0px 0px 1px 0px #508fb9;
+  }
+  
+  .small{
+    width: 200px;
+    height: 200px;
+    left: -100px;
+    bottom: -100px;
+  }
+  
+  .medium{
+    width: 400px;
+    height: 400px;
+    left: -200px;
+    bottom: -200px;
+  }
+  
+  .large{
+    width: 600px;
+    height: 600px;
+    left: -300px;
+    bottom: -300px;
+  }
+  
+  .xlarge{
+    width: 800px;
+    height: 800px;
+    left: -400px;
+    bottom: -400px;
+  }
+  
+  .xxlarge{
+    width: 1000px;
+    height: 1000px;
+    left: -500px;
+    bottom: -500px;
+  }
+  
+  .shade1{
+    opacity: 0.2;
+  }
+  .shade2{
+    opacity: 0.5;
+  }
+  
+  .shade3{
+    opacity: 0.7;
+  }
+  
+  .shade4{
+    opacity: 0.8;
+  }
+  
+  .shade5{
+    opacity: 0.9;
+  }
+  
+  @keyframes ripple{
+    0%{
+      transform: scale(0.8);
+    }
+    
+    50%{
+      transform: scale(1.2);
+    }
+    
+    100%{
+      transform: scale(0.8);
+    }
+  }
+  
+
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+  }
+  
+  .slider {
+    overflow: hidden;
+    background-color: white;
+    margin: 0 15px;
+    height: 80px;
+    width: 20px;
+    border-radius: 30px;
+    box-shadow: 15px 15px 20px rgba(218, 247, 255, 0.686), -15px -15px 30px #fff,
+      inset -5px -5px 10px rgba(0, 0, 255, 0.1),
+      inset 5px 5px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .slider::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 70px;
+    border-radius: 100%;
+    box-shadow: inset 0px 0px 0px #2d7ac2d5, 0px 420px 0 400px #4ff326,
+      inset 0px 0px 0px rgba(66, 78, 208, 0.838);
+    animation: animate_2 2.5s ease-in-out infinite;
+    animation-delay: calc(-0.09s * var(--i));
+  }
+  
+  @keyframes animate_2 {
+    0% {
+      transform: translateY(250px) rotate(-80deg);
+      filter: hue-rotate(0deg);
+    }
+  
+    50% {
+      transform: translateY(0) rotate(0deg);
+    }
+  
+    100% {
+      transform: translateY(250px) rotate(80deg);
+      filter: hue-rotate(180deg);
+    }
+  }
+
+   /* From Uiverse.io by cssbuttons-io */ 
+ button  {
+    align-items: center; 
+    /* background-image: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb); */
+    border: 0;
+    border-radius: 8px;
+    box-shadow: rgba(27, 3, 53, 0.588) 0 15px 30px -5px;
+    box-sizing: border-box;
+    color: #1a4c81;
+    display: flex;
+    font-size: 18px;
+    font-family: monospace;
+    justify-content: center;
+    line-height: 1em;
+    max-width: 100%;
+    min-width: 500px;
+    padding: 3px;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+ 
+  
+
+  button:active,
+  button:hover {
+    outline: 0;
+  }
+  
+  button span {
+    background-color: #5c9fdb;
+    padding: 16px 24px;
+    border-radius: 6px;
+    width: 100%;
+    height: 100%;
+    transition: 700ms;
+  }
+  
+  button:hover span {
+    background: none;
+  }
+  
+  button:active {
+    transform: scale(0.9);
+  } 
+
+  /* Headings */
+h1, h2 {
+    color: #2d5082;
+    font-weight: 500px;
+    margin-bottom: 20px;
+    font-family:monospace;
+}
+
+  /* * ================================
+   Main Content Box
+   ================================ */ 
+   .default-screen {
+    background: white;
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    width: 500px; /* Controls the width of the content box */
+}
+
+
+
+
+/* Styles for the login page */
+body {
+    background-color: #f8f9fa;
+}
+.login-container {
+    max-width: 400px;
+    margin: auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+.login-container .form-group {
+    margin-bottom: 20px;
+}
+
+/* Styles for the signup page */
+.signup-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+.signup-container .form-group {
+    margin-bottom: 20px;
+}
+
+.error-message {
+    font-size: 0.8em;
+    margin-top: 0.25rem;
+}
+
+.is-invalid {
+    border-color: #dc3545; /* Bootstrap's default invalid border color */
+    /* You can add other styles here if needed */
+}
+
+ 
+/* dashboard design */
+body {
+  background-color: #f8f9fa;
+  font-family: sans-serif;
+}
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+}
+.sidebar {
+  background-color: #fff;
+  width: 250px;
+  padding: 20px;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  /*align-items: center;  Remove this line*/
+}
+.sidebar-logo {
+  margin-bottom: 20px;
+  width: 100%;  
+  display: flex; /* Add this */
+  justify-content: center; /* Add this */
+  border: 2px solid rgb(255, 255, 255); /* Add this */
+  border-radius: 5px;  /* Add this */
+}
+.sidebar-logo img{
+ max-width: 60%; /* Modified from 100% to 80% */
+ height: auto;    /* Add this */
+}
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar-menu li a {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #343a40;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+.sidebar-menu li a:hover {
+  background-color: #e9ecef;
+}
+.sidebar-menu li a i {
+  margin-right: 10px;
+  color: #007bff;
+  transition: transform 0.2s ease; /* Smooth transition for icon */
+}
+.sidebar-menu li a:hover i {
+   transform: scale(1.1); /* Enlarge icon on hover */
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+}
+.top-bar {
+  background-color: #fff;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(134, 159, 188, 0.863);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.top-bar-left {
+  display: flex;
+  align-items: center;
+}
+.top-bar-right .bi-cart-fill:hover {
+  transform: scale(1.2); /* Increased scale on hover */
+}
+.top-bar-logo {
+  height: 30px;
+  margin-right: 15px;
+}
+.search-bar {
+  position: relative;
+}
+.search-bar input[type="text"] {
+  padding: 5px 15px 5px 8px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  width: 250px;
+}
+.search-bar button {
+  position: absolute;
+  left: 1%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  padding-right:50% ;
+  width: 200px;
+}
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  margin-left: 10px; /* Added spacing to the left of the first element */
+}
+/* .top-bar-right > * {
+  margin-left: 10px; /* Added spacing between elements */
+.plus-button { /* Renamed from switch-button to plus-button */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 15px;
+  transition: background-color 0.3s ease;
+}
+.plus-button {
+  transform: scale(0.5);
+  padding: 10px 20px;
+}
+.plus-button:hover {
+  background-color: #0056b3;
+}
+.user-profile {
+  display: flex;
+  align-items: center;
+}
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #6c757d;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 0.8rem;
+}
+.main-content {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+  min-height: 300px;
+  position: relative;
+}
+.options-dropdown {
+  position: absolute;
+  top: 100%;
+  left: auto;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  display: none;
+  margin-top: 10px;
+  min-width: 150px;
+}
+.options-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  text-align: left;
+  border: none;
+  background: none;
+  color: #343a40;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.options-dropdown button:hover {
+  background-color: #e9ecef;
+}
+/* Styles for Join Class Modal */
+#joinClassModal .modal-header {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  border-bottom: 1px solid #b0e0e6;
+}
+#joinClassModal .modal-body {
+  padding: 20px;
+}
+#joinClassModal .form-group label {
+  font-weight: bold;
+  color: #1a237e;
+}
+#joinClassModal .form-control {
+  border: 1px solid #b0e0e6;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 15px;
+  transition: border-color 0.3s ease;
+}
+#joinClassModal .form-control:focus {
+  border-color: #0d47a1;
+  box-shadow: 0 0 0 0.2rem rgba(176, 224, 230, 0.25);
+}
+#joinClassModal .modal-footer {
+  border-top: 1px solid #b0e0e6;
+}
+#joinClassModal .btn-secondary {
+  background-color: #b0e0e6;
+  color: #0d47a1;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+#joinClassModal .btn-secondary:hover {
+  background-color: #87ceeb;
+  color: #0d47a1;
+}
+#joinClassModal .btn-primary {
+  background-color: #0d47a1;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+#joinClassModal .btn-primary:hover {
+  background-color: #0b3885;
+}
+.top-bar-right .bi-cart-fill{
+ color: #007bff; /* Blue color for cart icon */
+ transition: transform 0.2s ease;
+ font-size: 1.5rem; /* Increased font size for the cart icon */
+}
+.top-bar-right .bi-cart-fill:hover {
+   transform: scale(1.2); /* Increased scale on hover */
+}
+
+/* Modal Styles */
+.modal-header {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  border-bottom: 1px solid #b0e0e6;
+}
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.modal-body {
+  padding: 1rem;
+}
+.form-group label {
+  font-weight: bold;
+  color: #1a237e;
+}
+.form-control {
+  border: 1px solid #b0e0e6;
+  border-radius: 5px;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.3s ease;
+}
+.form-control:focus {
+  border-color: #0d47a1;
+  box-shadow: 0 0 0 0.2rem rgba(176, 224, 230, 0.25);
+}
+.modal-footer {
+  border-top: 1px solid #b0e0e6;
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.btn-secondary {
+  background-color: #b0e0e6;
+  color: #0d47a1;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-right: 0.75rem;
+}
+.btn-secondary:hover {
+  background-color: #87ceeb;
+  color: #0d47a1;
+}
+.btn-primary {
+  background-color: #0d47a1;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: #0b3885;
+}
+.modal-dialog {
+  max-width: 500px;
+  margin: 1.75rem auto;
+}
