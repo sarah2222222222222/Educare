@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select Classroom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  
+  </head>
+  <body class="bg-gray-100 min-h-screen p-6">
+    <!-- Classroom Selector -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6 w-full max-w-md mx-auto">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">
+        Select a Classroom
+      </h2>
+      <select
+        id="classroomSelect"
+        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      >
+        <option value="">-- Choose Classroom --</option>
+      </select>
+    </div>
+
+    <!-- Class Details -->
+    <div
+      id="classDetails"
+      class="bg-white rounded-lg shadow-md p-6 w-full max-w-md mx-auto hidden"
+    >
+      <h3 class="text-xl font-semibold text-gray-800" id="classTitle"></h3>
+      <p class="text-gray-600 mb-4" id="classDescription"></p>
+      <span
+        class="inline-block bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm"
+        id="classCategory"
+      ></span>
+      
+      
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", fetchClasses);
+
+      // Fetch all classes from the backend API
+      async function fetchClasses() {
+        const selectElement = document.getElementById("classroomSelect");
+
+        try {
+          const response = await fetch("http://localhost:3000/class"); // Endpoint to fetch all classes
+
+          const result = await response.json();
+
+          if (response.ok && result.data && result.data.length > 0) {
+            result.data.forEach((classroom) => {
+              const option = document.createElement("option");
+              option.value = classroom._id; // Assuming `_id` is the unique class ID
+              option.textContent =
+                classroom.title || `${classroom.name} - ${classroom.subject}`; // Fallback to name - subject if title doesn't exist
+              selectElement.appendChild(option);
+            });
+          } else {
+            selectElement.innerHTML = "<option>No classes available</option>";
+          }
+        } catch (error) {
+          console.error("Error fetching classes:", error);
+          alert("An error occurred while fetching classes.");
+        }
+      }
+
+      // Handle classroom selection and show class details
+      document
+        .getElementById("classroomSelect")
+        .addEventListener("change", displayClassDetails);
+
+      async function displayClassDetails(event) {
+        const classId = event.target.value;
+        if (!classId) {
+          document.getElementById("classDetails").classList.add("hidden");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `http://localhost:3000/class/${classId}`
+          );
+          const result = await response.json();
+
+          if (response.ok && result.data) {
+            const classData = result.data;
+            document.getElementById("classTitle").textContent =
+              classData.title || `${classData.name} - ${classData.subject}`;
+            document.getElementById("classDescription").textContent =
+              classData.description || "No description available";
+            document.getElementById("classCategory").textContent =
+              classData.category || "Uncategorized";
+            document.getElementById("classDetails").classList.remove("hidden");
+          } else {
+            throw new Error("Failed to fetch class details");
+          }
+        } catch (error) {
+          console.error("Error fetching class details:", error);
+          alert("An error occurred while fetching class details.");
+        }
+      }
+    </script>
+  </body>
+</html>
